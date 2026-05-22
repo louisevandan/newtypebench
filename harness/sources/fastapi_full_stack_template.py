@@ -41,4 +41,13 @@ CONFIG = register(SourceConfig(
     # Frontend: source repo's own compose stack orchestrates everything.
     frontend_runner_kind="compose",
     frontend_dir="frontend",
+    frontend_test_path_re=r"^frontend/.*\.(spec|test)\.[tj]sx?$",
+    frontend_test_diff_paths=[
+        "frontend/tests/**",
+        "frontend/**/*.spec.ts",
+        "frontend/**/*.spec.tsx",
+        "frontend/**/*.test.ts",
+        "frontend/**/*.test.tsx",
+    ],
+    frontend_test_diff_strip_prefix="frontend/",
 ))

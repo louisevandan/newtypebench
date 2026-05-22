@@ -429,19 +429,24 @@ def extract_frontend_cmd(
     base_commit = g.rev_parse(repo_dir, f"{head_commit}^")
     console.log(f"base={base_commit[:10]} head={head_commit[:10]}")
 
-    # Auto-scope test_patch to frontend test files only.
-    test_patch = g.diff(
-        repo_dir, base_commit, head_commit,
-        paths=["frontend/tests/**", "frontend/**/*.spec.ts", "frontend/**/*.spec.tsx",
-               "frontend/**/*.test.ts", "frontend/**/*.test.tsx"],
-    )
-    (work_dir / "frontend_test_patch.diff").write_text(test_patch)
-    console.log(f"frontend test_patch: {len(test_patch)} bytes")
-
     # extract-frontend is currently single-source (fastapi-template). When a
     # multi-source CLI lands, route via `--source <short_name>` and look up
     # the SourceConfig here. For now, hard-code the only compose-mode source.
     from harness.sources import get as _get_source
+    src = _get_source("fastapi-template")
+
+    # Auto-scope test_patch to frontend test files only — source-driven globs
+    # so this command stays compatible when extended to other sources.
+    test_patch = g.diff(
+        repo_dir, base_commit, head_commit,
+        paths=src.frontend_test_diff_paths or [
+            "frontend/tests/**", "frontend/**/*.spec.ts", "frontend/**/*.spec.tsx",
+            "frontend/**/*.test.ts", "frontend/**/*.test.tsx",
+        ],
+    )
+    (work_dir / "frontend_test_patch.diff").write_text(test_patch)
+    console.log(f"frontend test_patch: {len(test_patch)} bytes")
+
     spec = fe.FrontendExtractSpec(
         instance_id=instance_id,
         repo_url=repo_url,
@@ -449,7 +454,7 @@ def extract_frontend_cmd(
         head_commit=head_commit,
         test_patch=test_patch or None,
         playwright_args=[a for a in playwright_args.split() if a] or None,
-        source=_get_source("fastapi-template"),
+        source=src,
     )
     result = fe.extract_frontend(spec, work_root=work_dir, console=console, repo_dir=repo_dir)
 

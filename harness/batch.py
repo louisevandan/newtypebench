@@ -73,14 +73,17 @@ def _scope_pytest(test_patch: str, source: SourceConfig) -> list[str]:
     })
 
 
-def _scope_playwright(test_patch: str) -> list[str]:
-    """Restrict Playwright to changed spec files (relative to frontend/)."""
-    hits = re.findall(
-        r"^\+\+\+ b/(frontend/(?:tests/[^\s]+|.+?\.(?:spec|test)\.[tj]sx?))",
-        test_patch,
-        re.MULTILINE,
-    )
-    return sorted({p.replace("frontend/", "", 1) for p in hits})
+def _scope_playwright(test_patch: str, source: SourceConfig) -> list[str]:
+    """Source-aware: use frontend_test_path_re + strip-prefix to scope Playwright."""
+    added_paths = re.findall(r"^\+\+\+ b/(\S+)", test_patch, re.MULTILINE)
+    if not source.frontend_test_path_re:
+        return []
+    path_re = re.compile(source.frontend_test_path_re)
+    prefix = source.frontend_test_diff_strip_prefix
+    return sorted({
+        (p[len(prefix):] if prefix and p.startswith(prefix) else p)
+        for p in added_paths if path_re.match(p)
+    })
 
 
 def _signal_for_kind(r: dict, kind: str) -> int:
@@ -192,11 +195,14 @@ def batch_extract(
                         shared_repo, base_commit, head_commit, paths=test_paths_glob,
                     )
                 else:
+                    fe_paths = source.frontend_test_diff_paths or [
+                        # legacy default — matches fastapi-template's layout.
+                        "frontend/tests/**", "frontend/**/*.spec.ts",
+                        "frontend/**/*.spec.tsx",
+                        "frontend/**/*.test.ts", "frontend/**/*.test.tsx",
+                    ]
                     test_patch = git_ops.diff(
-                        shared_repo, base_commit, head_commit,
-                        paths=["frontend/tests/**", "frontend/**/*.spec.ts",
-                               "frontend/**/*.spec.tsx",
-                               "frontend/**/*.test.ts", "frontend/**/*.test.tsx"],
+                        shared_repo, base_commit, head_commit, paths=fe_paths,
                     )
             except git_ops.GitError as e:
                 results.append(BatchRow(
@@ -267,7 +273,7 @@ def batch_extract(
                         duration_s=time.monotonic() - t0,
                     ))
                 else:
-                    scoped = _scope_playwright(test_patch) if test_patch else None
+                    scoped = _scope_playwright(test_patch, source) if test_patch else None
                     spec_fe = fe.FrontendExtractSpec(
                         instance_id=instance_id,
                         repo_url=repo_url,

@@ -75,4 +75,11 @@ CONFIG = register(SourceConfig(
         "--reporter=json",
     ],
     frontend_json_report_path="playwright-report/results.json",
+    frontend_test_diff_paths=[
+        "tests/**/*.spec.ts",
+        "tests/**/*.spec.tsx",
+        "tests/**/*.test.ts",
+        "tests/**/*.test.tsx",
+    ],
+    frontend_test_diff_strip_prefix="",  # testDir == ./tests at repo root
 ))

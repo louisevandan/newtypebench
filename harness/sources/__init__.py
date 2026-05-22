@@ -119,6 +119,18 @@ class SourceConfig:
     # other repos may use `PLAYWRIGHT_JSON_OUTPUT_NAME` env instead.
     frontend_json_report_path: str | None = None
 
+    # Git-diff path filters used to scope `test_patch` to frontend test files
+    # only (passed to `git diff -- <paths>`). Glob-style.
+    #   fastapi-template: ["frontend/tests/**", "frontend/**/*.spec.ts", ...]
+    #   bruno:            ["tests/**/*.spec.ts", "tests/**/*.spec.tsx", ...]
+    frontend_test_diff_paths: list[str] = field(default_factory=list)
+
+    # Prefix to strip when converting changed spec paths into Playwright CLI
+    # positional args (which expect paths relative to playwright's testDir
+    # ancestor). fastapi-template: "frontend/" (testDir inside `frontend/`),
+    # bruno: "" (testDir = ./tests at repo root).
+    frontend_test_diff_strip_prefix: str = ""
+
 
 # --------------------------------------------------------------------------
 # Registry
