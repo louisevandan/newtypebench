@@ -37,17 +37,45 @@ def _sha256_of_file_at_commit(repo_dir: Path, commit: str, rel_path: str) -> str
 def _derive_stack_domain(diff_text: str, source: SourceConfig) -> str:
     """Backend / frontend / fullstack from the non-test patch's `+++ b/` paths.
 
-    Uses the source's `backend_dir` to correctly identify backend paths for
-    repos that don't use the `backend/` prefix (e.g. mcp-context-forge has
-    backend at repo root, so every non-`frontend/` path is backend).
+    Source-aware routing:
+      * If `source.frontend_dir` is set, paths under it are frontend.
+      * If `source.backend_dir` is non-empty, paths under it are backend;
+        otherwise (root-as-backend repos like mcp-context-forge) anything
+        not under frontend_dir/`frontend/` is backend.
+      * Sources with no backend at all (bruno: frontend-only, backend_dir="")
+        report `frontend_only` whenever any frontend path is touched and
+        never `backend_only`/`fullstack`.
     """
     paths = re.findall(r"^\+\+\+ b/(.+?)\s*$", diff_text, re.MULTILINE)
+    frontend_prefixes: list[str] = []
+    if source.frontend_dir:
+        frontend_prefixes.append(f"{source.frontend_dir}/")
+    # Legacy fastapi-template path also recognized as frontend.
+    if "frontend/" not in frontend_prefixes:
+        frontend_prefixes.append("frontend/")
+
+    def _is_frontend(p: str) -> bool:
+        return any(p.startswith(prefix) for prefix in frontend_prefixes)
+
+    has_fe = any(_is_frontend(p) for p in paths)
+
+    # No Python backend at all (e.g. bruno's backend is Node.js, unsupported
+    # by the harness) — surface as frontend-only when frontend changes exist.
+    # We detect "no backend" as: backend_dir empty AND the only test_path_re
+    # is the never-match sentinel `(?!x)x`.
+    backend_unsupported = (
+        not source.backend_dir
+        and source.backend_test_path_re == r"(?!x)x"
+    )
+    if backend_unsupported:
+        return "frontend_only" if has_fe else "frontend_only"
+
     if source.backend_dir:
         has_be = any(p.startswith(f"{source.backend_dir}/") for p in paths)
     else:
-        # Source at repo root: anything not explicitly frontend is backend.
-        has_be = any(not p.startswith("frontend/") for p in paths)
-    has_fe = any(p.startswith("frontend/") for p in paths)
+        # Root-as-backend repos: anything not frontend is backend.
+        has_be = any(not _is_frontend(p) for p in paths)
+
     if has_be and has_fe:
         return "fullstack"
     if has_be:
@@ -88,6 +116,7 @@ def build_instance_from_extract(
     repo: str,
     source: SourceConfig,
     cutoff: str = "2026-01-01",
+    kind: str = "backend",
 ) -> dict[str, Any]:
     base_commit = summary["base_commit"]
     head_commit = summary["head_commit"]
@@ -100,8 +129,8 @@ def build_instance_from_extract(
         exclude=["*test*", "*.spec.ts", "*.spec.tsx", "*.test.ts", "*.test.tsx"],
     )
 
-    # Test paths are source-specific. Use the source's backend test glob and
-    # the shared frontend glob.
+    # Test paths are source-specific. Backend glob driven by SourceConfig
+    # heuristic; frontend glob driven explicitly by source.frontend_test_diff_paths.
     backend_test_globs = (
         ["backend/tests/**", "backend/app/tests/**"] if source.backend_dir == "backend"
         else (["server/tests/**"] if source.backend_dir == "server" else ["tests/**"])
@@ -109,10 +138,13 @@ def build_instance_from_extract(
     test_patch_backend = git_ops.diff(
         repo_dir, base_commit, head_commit, paths=backend_test_globs,
     )
+    frontend_globs = source.frontend_test_diff_paths or [
+        # legacy fastapi-template default
+        "frontend/tests/**", "frontend/**/*.spec.ts", "frontend/**/*.spec.tsx",
+        "frontend/**/*.test.ts", "frontend/**/*.test.tsx",
+    ]
     test_patch_frontend = git_ops.diff(
-        repo_dir, base_commit, head_commit,
-        paths=["frontend/tests/**", "frontend/**/*.spec.ts", "frontend/**/*.spec.tsx",
-               "frontend/**/*.test.ts", "frontend/**/*.test.tsx"],
+        repo_dir, base_commit, head_commit, paths=frontend_globs,
     )
 
     owner, name = repo.split("/", 1)
@@ -126,8 +158,17 @@ def build_instance_from_extract(
     problem, problem_notes = _problem_statement(pr_meta)
     notes.extend(problem_notes)
 
-    fail_to_pass_be = list(summary.get("fail_to_pass") or [])
-    pass_to_pass_be = list(summary.get("pass_to_pass") or [])
+    fail_to_pass_raw = list(summary.get("fail_to_pass") or [])
+    pass_to_pass_raw = list(summary.get("pass_to_pass") or [])
+    # Place F2P/P2P into the correct bucket based on which runner produced
+    # the summary. extract.py produces backend (pytest nodeids); frontend_extract.py
+    # produces frontend (Playwright spec titles).
+    if kind == "frontend":
+        fail_to_pass = {"backend": [], "frontend": fail_to_pass_raw}
+        pass_to_pass = {"backend": [], "frontend": pass_to_pass_raw}
+    else:
+        fail_to_pass = {"backend": fail_to_pass_raw, "frontend": []}
+        pass_to_pass = {"backend": pass_to_pass_raw, "frontend": []}
 
     created_at = pr_meta.get("mergedAt") or pr_meta.get("createdAt") or ""
 
@@ -146,8 +187,8 @@ def build_instance_from_extract(
         "test_patch": test_patch or (test_patch_backend + test_patch_frontend),
         "test_patch_backend": test_patch_backend,
         "test_patch_frontend": test_patch_frontend,
-        "fail_to_pass": {"backend": fail_to_pass_be, "frontend": []},
-        "pass_to_pass": {"backend": pass_to_pass_be, "frontend": []},
+        "fail_to_pass": fail_to_pass,
+        "pass_to_pass": pass_to_pass,
         "stack_domain": _derive_stack_domain(patch, source),
         "environment": {
             "python_version": source.python_version,
@@ -176,8 +217,15 @@ def build_from_extract(
     source: SourceConfig,
     repo: str = "fastapi/full-stack-fastapi-template",
     cutoff: str = "2026-01-01",
+    kind: str = "backend",
 ) -> tuple[int, int]:
-    """Returns (n_built, n_skipped)."""
+    """Returns (n_built, n_skipped).
+
+    kind controls where extract artifacts live on disk + which F2P/P2P
+    bucket the resulting instance's tests are placed in:
+      "backend"  → <work_root>/<id>/out/summary.json + test_patch.diff
+      "frontend" → <work_root>/<id>/frontend_out/summary.json + frontend_test_patch.diff
+    """
     # Index PRs by number.
     prs_by_number: dict[int, dict] = {}
     with prs_path.open() as f:
@@ -209,8 +257,12 @@ def build_from_extract(
                 n_skipped += 1
                 continue
             instance_id = r["instance_id"]
-            summary_path = work_root / instance_id / "out" / "summary.json"
-            test_patch_path = work_root / instance_id / "test_patch.diff"
+            if kind == "frontend":
+                summary_path = work_root / instance_id / "frontend_out" / "summary.json"
+                test_patch_path = work_root / instance_id / "frontend_test_patch.diff"
+            else:
+                summary_path = work_root / instance_id / "out" / "summary.json"
+                test_patch_path = work_root / instance_id / "test_patch.diff"
             if not summary_path.exists() or not test_patch_path.exists():
                 n_skipped += 1
                 continue
@@ -225,6 +277,7 @@ def build_from_extract(
                 repo=repo,
                 source=source,
                 cutoff=cutoff,
+                kind=kind,
             )
             out_f.write(json.dumps(instance, ensure_ascii=False, sort_keys=True))
             out_f.write("\n")

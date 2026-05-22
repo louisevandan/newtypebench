@@ -57,21 +57,29 @@ CONFIG = register(SourceConfig(
     # Playwright base image. (Implementation lands in a follow-up commit.)
     frontend_runner_kind="playwright_direct",
     frontend_dir="packages/bruno-app",
-    frontend_docker_image="mcr.microsoft.com/playwright:v1.51.1-jammy",
-    frontend_install_cmd=["npm", "ci"],
-    # bruno-app depends on these workspaces being built first.
-    frontend_pre_test_cmd=[
-        ["npm", "run", "build:bruno-common"],
-        ["npm", "run", "build:bruno-requests"],
-        ["npm", "run", "build:bruno-filestore"],
-        ["npm", "run", "build:bruno-converters"],
-        ["npm", "run", "build:bruno-query"],
-        ["npm", "run", "build:graphql-docs"],
-        ["npm", "run", "build:schema-types"],
+    # Playwright base + Electron GUI deps (GTK/NSS/ATK/cups/asound/xvfb).
+    # See harness/docker/Dockerfile.playwright-electron.
+    frontend_docker_image="prototypebench/playwright-electron:v1.51.1",
+    # bruno's own setup.js does install (npm i --legacy-peer-deps +
+    # force-install platform deps) AND the 7 workspace builds in the right
+    # dependency order AND the JS sandbox library bundle. Then we SUID
+    # chrome-sandbox (required by Electron unless --no-sandbox is passed,
+    # which we can't pass without patching bruno's own playwright/index.ts).
+    frontend_install_cmd=[
+        "bash", "-c",
+        "npm run setup && "
+        "chown root:root node_modules/electron/dist/chrome-sandbox && "
+        "chmod 4755 node_modules/electron/dist/chrome-sandbox",
     ],
+    frontend_pre_test_cmd=[],
+    # No `--project=` here: bruno's config has three projects (default, auth,
+    # ssl) where `default` testIgnores `auth/**` & `ssl/**`. Hard-coding any
+    # single project would silently skip specs that live in the others
+    # (verified: #7911's `tests/auth/...spec.ts` was 0-matched under
+    # `--project=default`). Without --project, Playwright routes each spec
+    # path arg to the project whose testDir+testIgnore matches.
     frontend_test_cmd=[
         "npx", "playwright", "test",
-        "--project=default",
         "--reporter=json",
     ],
     frontend_json_report_path="playwright-report/results.json",

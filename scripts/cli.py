@@ -193,6 +193,10 @@ def build_from_extract_cmd(
     cutoff: str = typer.Option(
         "2026-01-01", "--cutoff", help="ISO date for contamination_tier split."
     ),
+    kind: str = typer.Option(
+        "backend", "--kind",
+        help="'backend' or 'frontend' — selects extract artifact paths + F2P bucket.",
+    ),
 ) -> None:
     """Phase 1 step 4 — convert usable batch-extract results into tasks/instances.jsonl.
 
@@ -205,7 +209,12 @@ def build_from_extract_cmd(
     from scripts.build_from_extract import build_from_extract as bfe
 
     src = get_source(source)
-    rep = report or _raw_path(src.short_name, "extract_report.jsonl")
+    # Default report path is kind-aware so callers can omit --report when they
+    # ran `batch-extract --kind frontend` (which writes to *.frontend.jsonl).
+    default_report_name = (
+        "extract_report.frontend.jsonl" if kind == "frontend" else "extract_report.jsonl"
+    )
+    rep = report or _raw_path(src.short_name, default_report_name)
     pr_path = prs or _raw_path(src.short_name, "prs.jsonl")
     out = output or Path(f"tasks/instances.{src.short_name}.jsonl")
 
@@ -225,6 +234,7 @@ def build_from_extract_cmd(
         report_path=rep, prs_path=pr_path, repo_dir=repo_dir,
         work_root=work_root, output=out,
         statuses=status_set, cutoff=cutoff, repo=src.name, source=src,
+        kind=kind,
     )
     console.print(f"[green]built[/green] {n_built} instance(s) → {out}")
     console.print(f"[yellow]skipped[/yellow] {n_skipped} (status not in {sorted(status_set)} or missing artifacts)")
