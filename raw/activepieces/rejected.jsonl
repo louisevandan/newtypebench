@@ -1,0 +1,199 @@
+{"number": 13347, "reason": "no test file changes (neither backend nor frontend)", "title": "chore(pieces): remove unnecessary project.json from connectuc, hootsuite, and pdf4me"}
+{"number": 13345, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(streak): add Streak CRM piece with actions and webhook triggers"}
+{"number": 13343, "reason": "no test file changes (neither backend nor frontend)", "title": "chore(security): bump deps to address open Dependabot advisories"}
+{"number": 13338, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(worker): use bracket notation for socket.handshake.auth (TS4111)"}
+{"number": 13337, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: automated translation workflow was broken"}
+{"number": 13335, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(beebole): add Beebole piece with time tracking actions"}
+{"number": 13333, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(simplyprint): update logo url to  cdn"}
+{"number": 13332, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(imeetify): add iMeetify piece with appointment event webhook tri…"}
+{"number": 13330, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(teamhood): add actions for items/rows/users and triggers for new, updated, and completed items"}
+{"number": 13329, "reason": "non-task title prefix: docs: add embed changes in breaking chan", "title": "docs: add embed changes in breaking changes"}
+{"number": 13328, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13327, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): add one-time to flow conversion + slim system prompt"}
+{"number": 13325, "reason": "excluded path region: packages/server/api/src/app/ee/authentication/saml-authn/authn-sso-saml-service.ts", "title": "fix: saml acs url should be the same for cusotmers pre-removal of custom"}
+{"number": 13319, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-sync-job.ts", "title": "fix: reconstruct messages for old conversations without uiMessages"}
+{"number": 13317, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: ci constantly failing because of @acutal-app/api"}
+{"number": 13316, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-sync-job.ts", "title": "fix: reconstruct messages for old conversations without uiMessages"}
+{"number": 13315, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add llmDescription to pieces and their actions and triggers"}
+{"number": 13314, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add PDF4me piece with 7 document processing actions"}
+{"number": 13313, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-service.ts", "title": "feat: add chat analytics telemetry push to console"}
+{"number": 13312, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add Hootsuite piece"}
+{"number": 13308, "reason": "non-task title prefix: docs: enhance event streaming guide with", "title": "docs: enhance event streaming guide with new screenshots and clarify sample data usage"}
+{"number": 13307, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(provenexpert): Add ProvenExpert piece, manage customer reviews, surveys, and send invitation emails"}
+{"number": 13306, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(webhook): handle undefined auth fields without crashing engine"}
+{"number": 13305, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(web): one-click step testing from canvas + revamped split/drawer test panel"}
+{"number": 13303, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: ee/ce should allow platform creation for first user"}
+{"number": 13301, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: allow users to select which permissions to grant when connecting a service"}
+{"number": 13299, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(apify): remove deprecated crawler option and validate dataset pagination"}
+{"number": 13297, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13292, "reason": "excluded path region: packages/server/api/src/app/ee/alerts/alerts-service.ts", "title": "feat: remove custom domains"}
+{"number": 13289, "reason": "non-task title prefix: chore: bump github action versions off n", "title": "chore: bump github action versions off node 20 across all workflows"}
+{"number": 13287, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: restore insert button on step roots and fix broken e2e tests"}
+{"number": 13286, "reason": "non-task title prefix: chore: bump github action versions to dr", "title": "chore: bump github action versions to drop node 20 deprecation warnings"}
+{"number": 13285, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: importing templates in the builder was not importing the notes"}
+{"number": 13284, "reason": "only docs/ci/lock files", "title": "ci(sbom): scope Grype to Critical CVEs and stop SARIF upload"}
+{"number": 13282, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(google): fix file search not working across Shared Drives in Docs, Drive, Sheets, and Forms"}
+{"number": 13281, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: allow user to select steps while run hasn't finished without constantly dragging them to the latest executed step"}
+{"number": 13280, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add Wayfront piece"}
+{"number": 13279, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: sidebar buttons were not centered when collapsed"}
+{"number": 13278, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: jump-to-failed-step button was not panning to failed step + wasn't showing correct step status on canvas when failed step is inside a loop"}
+{"number": 13277, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13276, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(engine): subflow failure overwriting sibling waitpoint-based steps outputs on resume"}
+{"number": 13271, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(husky): update pre-push script to include lint-only option"}
+{"number": 13270, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13268, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: telemetry event on user signup"}
+{"number": 13266, "reason": "non-task title prefix: chore: the queue status in the runs page", "title": "chore: the queue status in the runs page was constantly showing up on viewing runs table, now it doesn't"}
+{"number": 13263, "reason": "bot author: app/allcontributors", "title": "docs: add jerboa88 as a contributor for code"}
+{"number": 13262, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-conversation-entity.ts", "title": "feat(chat): persist UI messages for reliable reload rendering"}
+{"number": 13260, "reason": "excluded path region: packages/server/api/src/app/ee/chat/tools/chat-tools.ts", "title": "feat(mcp): replace ap_list_pieces with bulk ap_research_pieces"}
+{"number": 13259, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13258, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): add voice input, text-to-speech, and redesign model selector"}
+{"number": 13257, "reason": "excluded path region: packages/server/api/src/app/ee/flags/enterprise-flags.hooks.ts", "title": "refactor(chat): remove redundant SHOW_CHAT flag, use plan.chatEnabled directly"}
+{"number": 13256, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(pieces): add Frill integration with actions and triggers"}
+{"number": 13255, "reason": "excluded path region: packages/server/api/src/app/ee/chat/history/chat-history.ts", "title": "fix(chat): persist display tools, plan card, and thinking on reload"}
+{"number": 13254, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(SimplyPrint): add initial implementation"}
+{"number": 13252, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(google-sheets): exclude header row from Get All Rows when first r…"}
+{"number": 13250, "reason": "excluded path region: packages/server/api/src/app/ee/chat/agents/builder-agent.ts", "title": "feat(chat): revamp streaming UI with Zustand store and improved UX"}
+{"number": 13247, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(youtrack): add YouTrack piece with actions and triggers"}
+{"number": 13246, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13243, "reason": "no test file changes (neither backend nor frontend)", "title": "chore(deps): require 3-day minimum release age for npm installs"}
+{"number": 13242, "reason": "excluded path region: packages/server/api/src/app/ee/platform/platform-plan/worker-group.service.ts", "title": "fix(server): bump worker-group cache key to v2 to isolate rolling-deploy reads"}
+{"number": 13241, "reason": "non-task title prefix: ci: generate sboms and grype scans for a", "title": "ci: generate SBOMs and Grype scans for all image builds"}
+{"number": 13239, "reason": "non-task title prefix: chore: add notes to the event destinatio", "title": "chore: add notes to the event destination flow "}
+{"number": 13237, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(trigger-source): add missing flowVersionId index"}
+{"number": 13236, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(trigger-source): add missing flowVersionId index"}
+{"number": 13235, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(weekdone): add Weekdone piece with OAuth2 auth, actions, and triggers"}
+{"number": 13234, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(mcp): switch from enabledTools to disabledTools so new tools auto-appear"}
+{"number": 13230, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(lemlist): campaigns dropdown was broken "}
+{"number": 13229, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(kapso): fix phone number prop"}
+{"number": 13228, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor(pieces): drop in-memory list and piece-version caches"}
+{"number": 13226, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13224, "reason": "excluded path region: packages/server/api/src/app/ee/chat/tools/chat-tools.ts", "title": "fix(chat): custom API call support, build card fixes, and action name suggestions"}
+{"number": 13223, "reason": "excluded path region: packages/server/api/src/app/ee/chat/agents/builder-agent.ts", "title": "feat(chat): long thinking and agentic architecture"}
+{"number": 13219, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(canary): skip system jobs on canary app + reserve schema v9"}
+{"number": 13218, "reason": "non-task title prefix: chore: allow creating placeholder connec", "title": "chore: allow creating placeholder connections through the api"}
+{"number": 13217, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(oracle-database): isolate oracledb in a forked child process"}
+{"number": 13216, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(elevenlabs): update API key instructions to include required permissions"}
+{"number": 13215, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(subflows): show disabled subflows with guard against execution"}
+{"number": 13208, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13206, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(engine): stream SUCCEEDED for steps neighbouring skipped steps"}
+{"number": 13205, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(platform): serve user profile pictures from platforms assets"}
+{"number": 13204, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add external id and id of flows to flow related audit logs"}
+{"number": 13203, "reason": "non-task title prefix: chore: add audit events for publishing, ", "title": "chore: add audit events for publishing, disabling and enabling flows"}
+{"number": 13202, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(subflows): clarify Call Flow dropdown hides unpublished/disabled subflows"}
+{"number": 13199, "reason": "excluded path region: packages/server/api/src/app/ee/platform/platform-plan/worker-group.service.ts", "title": "fix(server): drop redlock + cache no-worker-group sentinel in getWorkerGroupId"}
+{"number": 13197, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(jotform): parse and flatten new submission trigger output"}
+{"number": 13196, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(pieces): show actual error message in kapso auth validation"}
+{"number": 13193, "reason": "excluded path region: packages/server/api/src/app/ee/users/users-controller.ts", "title": "feat(api): expose single user read endpoint"}
+{"number": 13192, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(mcp): auto-resolve piece versions and improve tool UX"}
+{"number": 13191, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-service.ts", "title": "feat(chat): enable prompt caching for all AI providers"}
+{"number": 13190, "reason": "excluded path region: packages/server/api/src/app/ee/chat/history/chat-history.ts", "title": "feat(chat): revamp thinking UI with chain-of-thought block"}
+{"number": 13189, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13185, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(pieces): remove \"Activepieces\" brand leak from Microsoft OAuth descriptions"}
+{"number": 13180, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: revert pieces deps pin so the translation generation workflow runs"}
+{"number": 13178, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: importing the flow inside the builder was not showing the result in the builder"}
+{"number": 13177, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(platform): restrict /platforms/assets/:id to PLATFORM_ASSET files"}
+{"number": 13176, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: event streaming trigger payload + use correct piece version when resolving the auth token url  for oauth2 connections"}
+{"number": 13175, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: some pieces were failing to reconnect in the UI for older versions like MS Excel 365 on piece version 0.5.3"}
+{"number": 13173, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(metabase): add custom api call action"}
+{"number": 13172, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(freshservice): Add change and change-task support for Freshservice"}
+{"number": 13171, "reason": "no test file changes (neither backend nor frontend)", "title": "docs(security): add security advisory response playbook"}
+{"number": 13164, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(deftform): use responses array instead of fields in get-form-responses"}
+{"number": 13162, "reason": "excluded path region: packages/server/api/src/app/ee/chat/mcp/chat-mcp.ts", "title": "feat(mcp): add structuredContent to MCP tool responses"}
+{"number": 13161, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add MCP builder skill"}
+{"number": 13159, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(event-destinations): align trigger payload with test payload"}
+{"number": 13158, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(webhooks): correct payload size calculation for buffers"}
+{"number": 13156, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(github): add support for github app auth"}
+{"number": 13155, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-service.ts", "title": "fix(chat): robust project scoping, connection projectId, and build progress"}
+{"number": 13154, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): enforce project scoping during build and fix progress card"}
+{"number": 13153, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): resolve options activity step, notes in build card, and project label lifecycle"}
+{"number": 13150, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(mcp): resolve 11 MCP tool issues — dropdown resolution, validation, error handling, and new delete flow tool"}
+{"number": 13149, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): optimize build process, system prompt, and connection handling"}
+{"number": 13144, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(mcp): derive authorize redirect URL from request host"}
+{"number": 13143, "reason": "excluded path region: packages/server/api/src/app/ee/authentication/saml-authn/authn-sso-saml-controller.ts", "title": "fix(mcp): derive OAuth metadata URLs from request host"}
+{"number": 13142, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(iLoveAPI): PDF processing and electronic signature"}
+{"number": 13141, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: subflow retry callback no longer hijacks subsequent step pauses"}
+{"number": 13140, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(pieces): connectuc logo"}
+{"number": 13138, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-service.ts", "title": "feat(chat): redesign AI chat UX with thinking, tiers, and platform-scoped experience"}
+{"number": 13137, "reason": "non-task title prefix: chore: use node cron for expirependingss", "title": "chore: use node cron for expirePendingSsoDomains"}
+{"number": 13135, "reason": "non-task title prefix: chore: release v0.83.0", "title": "chore: release v0.83.0"}
+{"number": 13133, "reason": "excluded path region: packages/server/api/src/app/ee/platform/admin/admin-platform.service.ts", "title": "feat(chat): enhance AI chat build experience"}
+{"number": 13132, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(worker): union sandbox resolv.conf nameservers into iptables egress allowlist"}
+{"number": 13130, "reason": "excluded path region: packages/server/api/src/app/ee/platform-webhooks/platform-webhooks.module.ts", "title": "fix: dispatch streaming events to destinations"}
+{"number": 13128, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add grill me and design skills to codebase"}
+{"number": 13127, "reason": "excluded path region: packages/server/api/src/app/ee/chat/chat-approval-gate.ts", "title": "feat(chat): move chat feature from CE to EE"}
+{"number": 13126, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): fix markdown table rendering when header contains #"}
+{"number": 13125, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(workers): backfill streamStepProgress in v7→v8 migration and reject poisoned jobs"}
+{"number": 13124, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(gmail): default Find Email to latest emails when no filters set"}
+{"number": 13123, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): show connection status and reconnect in picker"}
+{"number": 13122, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): default to Sonnet instead of Opus for chat model"}
+{"number": 13121, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(workers): drain BullMQ deferredFailure jobs (cherry-pick #13120)"}
+{"number": 13120, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(workers): drain BullMQ deferredFailure jobs to terminal failed state"}
+{"number": 13117, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(workers): honor BullMQ deferredFailure to drain zombie jobs (cherry-pick #13110)"}
+{"number": 13116, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): add conversation header and fix connection picker state"}
+{"number": 13115, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): enhance system prompt and add cross-project tools"}
+{"number": 13114, "reason": "no test file changes (neither backend nor frontend)", "title": "chore(savvycal): bump version to 0.1.0"}
+{"number": 13110, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(workers): honor BullMQ deferredFailure to drain zombie jobs"}
+{"number": 13109, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): default to personal project and show Personal Project label"}
+{"number": 13107, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): persist user message before streaming to survive page refresh"}
+{"number": 13106, "reason": "excluded path region: packages/server/api/src/app/ee/alerts/alerts-module.ts", "title": "feat(alerts): platform admins can un/subscribe to projects' alerts + personal projects alerts can be turned on/off + you can type the default alert email for your project on creation"}
+{"number": 13105, "reason": "excluded path region: packages/server/api/src/app/ee/platform-webhooks/platform-webhooks.controller.ts", "title": "feat(event-streaming): handler flow generator + dispatch hardening"}
+{"number": 13104, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): add server-side tool approval for destructive actions"}
+{"number": 13103, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(engine): dehydrate large flow-run step outputs to S3 (SRE-69)"}
+{"number": 13101, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): replace hardcoded Anthropic with generic AI provider in setup UI"}
+{"number": 13098, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(parallel): add Parallel piece with web research actions"}
+{"number": 13096, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(mcp): remove unused MCP server status toggle"}
+{"number": 13095, "reason": "no test file changes (neither backend nor frontend)", "title": "chore(piece-mistral-ai): pin peers to 0.26.2 / 0.67.1 / 0.12.1 "}
+{"number": 13093, "reason": "excluded path region: packages/server/api/src/app/ee/flags/enterprise-flags.hooks.ts", "title": "fix: federated signup redirection"}
+{"number": 13092, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(pieces-supabase): add list tables and get table schema actions"}
+{"number": 13090, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: error handling followup"}
+{"number": 13089, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(mcp): add platform-wide MCP server"}
+{"number": 13087, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(engine): defer flow payload resolution to engine subprocess"}
+{"number": 13086, "reason": "excluded path region: packages/server/api/src/app/ee/alerts/alerts-service.ts", "title": "feat: Show failed step details across alert email and runs table + a button to jump to failed step while viewing run"}
+{"number": 13085, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor(engine): rename runProgressService to flowRunProgressReporter"}
+{"number": 13084, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(google-drive): fix file extension handling in Google Drive `list-files` action"}
+{"number": 13082, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add platform admin connections page"}
+{"number": 13081, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(builder): redesign testing UX with drawer/split panels, Friendly View output, and refreshed data selector"}
+{"number": 13080, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(web): create flows/tables inside folders + branded empty state"}
+{"number": 13079, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): redesign AI chat UI with progressive proposals and connection picker"}
+{"number": 13078, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(baserow): clean French i18n, sync translation keys, reorder actions"}
+{"number": 13075, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): make chat platform-wide with project context selector"}
+{"number": 13073, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: variables manager (encrypted project secrets)"}
+{"number": 13072, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: sso domain verification"}
+{"number": 13071, "reason": "excluded path region: packages/server/api/src/app/ee/authentication/saml-authn/authn-sso-saml-controller.ts", "title": "feat: add SSO domain DNS verification (admin-only)"}
+{"number": 13068, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: build error"}
+{"number": 13066, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: add invitation check"}
+{"number": 13065, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(Gamma): upgrade gamma piece to v1.0 from v0.2 and add folder selection"}
+{"number": 13064, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(YouTube): new-video trigger returns only latest video"}
+{"number": 13063, "reason": "non-task title prefix: docs: clarify truncated-logs behavior an", "title": "docs: clarify truncated-logs behavior and env var"}
+{"number": 13062, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(db): mark ReplacesSandboxWithVercelAiSdk migration as non-breaking"}
+{"number": 13061, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(snowflake): drop invalid session:role-any scope from OAuth flow"}
+{"number": 13060, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(microsoft-teams): make dropdown loaders resilient to throttling a…"}
+{"number": 13059, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): add conversation compaction to prevent context window overflow"}
+{"number": 13057, "reason": "excluded path region: packages/server/api/src/app/ee/authentication/saml-authn/saml-attributes.ts", "title": "fix(saml): support Microsoft Entra schema-qualified claims and harden SAML response parsing"}
+{"number": 13056, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: remove dangerouslySetInnerHTML XSS risk in code block"}
+{"number": 13055, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(server): redact secrets from pino logs"}
+{"number": 13054, "reason": "no test file changes (neither backend nor frontend)", "title": "chore(qawafel): update logo URL"}
+{"number": 13053, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(microsoft-outlook): update logo URL "}
+{"number": 13046, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(worker): retain failed jobs per queue default for non-event-destination jobs"}
+{"number": 13045, "reason": "non-task title prefix: chore: remove dead e2b system props and ", "title": "chore: remove dead E2B system props and dependencies"}
+{"number": 13044, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: upgrade chat model lists to latest versions"}
+{"number": 13043, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(service-now): expand actions and triggers, add knowledge/email/c…"}
+{"number": 13041, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(chat): replace E2B sandbox with Vercel AI SDK for multi-provider chat"}
+{"number": 13037, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(deftform): add Deftform piece with 7 actions and 1 polling trigger"}
+{"number": 13035, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(ai-providers): make Azure API version configurable"}
+{"number": 13033, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(web): limit error dialog to table-related queries"}
+{"number": 13032, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(ai): add input images support for generate image action"}
+{"number": 13031, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(mcp): skip flaky ap_run_action tests that hang on CI"}
+{"number": 13030, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(descript): add Descript integration with actions and triggers"}
+{"number": 13028, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(mistral): add ocr action and support for cloudflare AI gateway"}
+{"number": 13027, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(pieces): guard against crash when installing .tgz piece"}
+{"number": 13026, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(attio): normalize record values and add Get Record action"}
+{"number": 13025, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(aiprise): add environment switch sandbox/production) to auth"}
+{"number": 13024, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: New translation files"}
+{"number": 13022, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: trigger sample data was getting lost when editing a published flow"}
+{"number": 13021, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(drupal): remove redundant peerDependencies causing publish pipeline failure"}
+{"number": 13020, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): improve streaming stability with diagnostics and recovery"}
+{"number": 13019, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(chat): invalidate connections query after creating connection in chat"}
+{"number": 13018, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(piece): add Chess.com community piece"}
+{"number": 13015, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(server): always revalidate index.html to avoid stale assets behind Cloudflare"}

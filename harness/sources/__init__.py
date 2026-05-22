@@ -66,6 +66,15 @@ class SourceConfig:
     # Filter cutoff: PRs merged before this date are dropped (harness-incompatible base).
     uv_era_min_merged_at: str = "2020-01-01"
 
+    # Frontend (optional — only sources with Playwright / Vitest tasks).
+    # If None, filter falls back to the legacy `^frontend/.*\.(spec|test)\.[tj]sx?$`
+    # default that fits fastapi-template's layout.
+    frontend_test_path_re: str | None = None
+
+    # Path-prefix regex for changed files that disqualify a PR (e.g. dual-license
+    # `packages/ee/` regions). Matches against any single changed-file path.
+    path_exclude_re: str | None = None
+
 
 # --------------------------------------------------------------------------
 # Registry
@@ -133,3 +142,5 @@ def effective_uv_extras(source: SourceConfig, repo_dir) -> list[str]:
 # Eagerly populate the registry by importing each source module.
 from . import fastapi_full_stack_template  # noqa: F401, E402
 from . import mcp_context_forge  # noqa: F401, E402
+from . import activepieces  # noqa: F401, E402
+from . import bruno  # noqa: F401, E402

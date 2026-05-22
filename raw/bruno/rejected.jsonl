@@ -1,0 +1,138 @@
+{"number": 8072, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: use OS resolver for .local hostnames to fix mDNS resolution"}
+{"number": 8064, "reason": "only docs/ci/lock files", "title": "docs(cli): polish Docker Hub README rendering — absolute links, blockquote restructure, streamline steps"}
+{"number": 8062, "reason": "no test file changes (neither backend nor frontend)", "title": "Fix/pm.set next request(null) not translating"}
+{"number": 8049, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: 3093 - Fix pm.setNextRequest(null) not translating to bru.runner.stopExecution()"}
+{"number": 8048, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: AI features into preferences and Redux store"}
+{"number": 8040, "reason": "non-task title prefix: chore: add stack trace to boundary", "title": "chore: add stack trace to boundary"}
+{"number": 8037, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add bru.hasGlobalEnvVar method and update translations"}
+{"number": 8036, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(cli): add Docker Compose example for the Bruno CLI Docker image"}
+{"number": 8021, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: normalize select file labels"}
+{"number": 8009, "reason": "non-task title prefix: chore: change loader", "title": "chore: change loader"}
+{"number": 8007, "reason": "non-task title prefix: chore: updated docker maintainer label ", "title": "chore: updated Docker maintainer label "}
+{"number": 8002, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: save dotenv save shortcut"}
+{"number": 8001, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(cli): add Docker image with alpine and debian variants"}
+{"number": 7993, "reason": "no test file changes (neither backend nor frontend)", "title": "fix/send request shortcut issue"}
+{"number": 7973, "reason": "no test file changes (neither backend nor frontend)", "title": "ai: coding standards for e2e tests"}
+{"number": 7967, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: workspace home icon alignment in title bar when already fullscreen"}
+{"number": 7955, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: Update SaveTransientRequestModal empty state when collections don't exist"}
+{"number": 7931, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: revert HeaderList method names to PropertyList conventions"}
+{"number": 7929, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: message in ConnectGitRemote and RemoveGitRemote"}
+{"number": 7926, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: scrollbar restoration"}
+{"number": 7925, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: allow empty header names in CLI and gRPC request preparation"}
+{"number": 7924, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: remove dragbar z-index that was bleeding through modals"}
+{"number": 7921, "reason": "non-task title prefix: revert \"feat: ws multi message\"", "title": "Revert \"feat: ws multi message\""}
+{"number": 7917, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: remove idx from HeaderList, extend ReadOnlyPropertyList, add positional method translations"}
+{"number": 7916, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: response pane overflow on vertical split drag for grpc/ws requests"}
+{"number": 7915, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add benchmark framework for collection mount performance"}
+{"number": 7897, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add ajv-formats support to jsonSchema assertion"}
+{"number": 7889, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: refresh code editor and query editor on resize"}
+{"number": 7878, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: auto-require Postman sandbox globals during import"}
+{"number": 7876, "reason": "no test file changes (neither backend nor frontend)", "title": "Centralize OpenAPI sync state in Redux"}
+{"number": 7871, "reason": "no test file changes (neither backend nor frontend)", "title": "Add missing space in help text of Variables Editor window"}
+{"number": 7869, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(cli): skip headers with empty name when building request"}
+{"number": 7867, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: use stable index in requests tab in report"}
+{"number": 7866, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(api-spec): drag-to-resize split pane with persisted width"}
+{"number": 7861, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: collection settings access, UI overflow fixes, and auto-focus URL bar"}
+{"number": 7848, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(openapi-sync): virtualize spec diff rendering + spec change block navigation"}
+{"number": 7844, "reason": "no test file changes (neither backend nor frontend)", "title": "Fix: Variables Text Missing Whitespace"}
+{"number": 7841, "reason": "no test file changes (neither backend nor frontend)", "title": "fix/search bar in codeeditor"}
+{"number": 7828, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: handle empty mime type in insomnia importer"}
+{"number": 7820, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: restore default axios request headers"}
+{"number": 7818, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: Stabilize variable info editor transition and popup lifecycle (…"}
+{"number": 7812, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: shortcut in query builder"}
+{"number": 7810, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor(table): virtualise tables for perf for EditableTable components"}
+{"number": 7805, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: shortcut for query builder"}
+{"number": 7803, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: enable DPI-aware NSIS installer"}
+{"number": 7797, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: persist CodeEditor's json state across tab switching"}
+{"number": 7786, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add default http protocol when URL scheme is missing"}
+{"number": 7769, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: \"URL encoding off\" ignored for multi-param URLs in generated code"}
+{"number": 7767, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: apply proxy settings to URL spec import"}
+{"number": 7755, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: replace old Checkbox component and Added new TextInput, MaskedInput, and Select components"}
+{"number": 7750, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: make \"Remove Collection\" consistent with \"Remove Workspace\""}
+{"number": 7747, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: response filter in runner"}
+{"number": 7732, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: layout glitches on multiline environment variables when scrolling"}
+{"number": 7730, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: avoid round trip loss of annotation data"}
+{"number": 7721, "reason": "no test file changes (neither backend nor frontend)", "title": "update readme file with image"}
+{"number": 7717, "reason": "no test file changes (neither backend nor frontend)", "title": " import response examples for description only responses in swagger 2.0 convertion"}
+{"number": 7709, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: qol fixes for keybindings"}
+{"number": 7702, "reason": "only docs/ci/lock files", "title": "please give sid-bruno some nice privileges"}
+{"number": 7700, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: fix scroll in querybar component"}
+{"number": 7692, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: prevent assertions from returning wrong values during large iteration runs"}
+{"number": 7690, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: preserve stream-backed file bodies during request interpolation"}
+{"number": 7665, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: sample collection creation race condition"}
+{"number": 7664, "reason": "no test file changes (neither backend nor frontend)", "title": "perf: optimize DNS resolution to reduce request latency"}
+{"number": 7660, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add missing status assertions and .not negation support"}
+{"number": 7652, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: update system proxy fetching to use finally"}
+{"number": 7647, "reason": "non-task title prefix: chore: add a promise based wait group fo", "title": "chore: add a promise based wait group for the shell variables"}
+{"number": 7646, "reason": "no test file changes (neither backend nor frontend)", "title": "Fix: ensure string authvalues, string header processing"}
+{"number": 7645, "reason": "no test file changes (neither backend nor frontend)", "title": "security: fix all critical vuln dependency reports"}
+{"number": 7644, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add helper to ensure string conversion for non-string values in Postman to Bruno conversion"}
+{"number": 7639, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: prevent rerun flicker and fix runner configuration list order"}
+{"number": 7638, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: 'axios' module not found locally"}
+{"number": 7637, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: app crash on clicking close button"}
+{"number": 7632, "reason": "non-task title prefix: chore: pin axios version", "title": "chore: pin axios version"}
+{"number": 7631, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(cli): handle non-array tags from bru parser to prevent crash"}
+{"number": 7629, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: multipart form button alignment"}
+{"number": 7622, "reason": "no test file changes (neither backend nor frontend)", "title": "Add support for importing Swagger 2.0 specifications into Bruno collections"}
+{"number": 7620, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: isJson assertion should accept arrays as valid JSON"}
+{"number": 7619, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: clear CodeMirror selection highlight on blur in inline editors"}
+{"number": 7616, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: handle non-array tags from bru parser to prevent crash"}
+{"number": 7613, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: include examples when writing collection items in CLI OpenAPI import"}
+{"number": 7610, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: cURL paste not updating request tab editors visually"}
+{"number": 7609, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: basic annotation syntax support for lang"}
+{"number": 7602, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(dependencies): update fast-xml-parser to 5.5.7 and simple-git to …"}
+{"number": 7598, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(security): santize HTML before being rendered in documentation blocks"}
+{"number": 7596, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: unmatched brackets invisible on dark themes"}
+{"number": 7595, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: interpolate env variables in multipart-form file attachment paths"}
+{"number": 7592, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: refine dotenv serialization for special characters handling"}
+{"number": 7590, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: resolve theme, overflow, and z-index bugs in Remove Collection modal"}
+{"number": 7589, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: status & statusText swap"}
+{"number": 7586, "reason": "no test file changes (neither backend nor frontend)", "title": "fixed noproxy flag from `----no-proxy` to `--no-proxy`"}
+{"number": 7585, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: re-apply secret masking after editor value changes"}
+{"number": 7582, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: add the meta block to the object returned by transformFolderRoot…"}
+{"number": 7581, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: preserve folder/request ordering in Postman export"}
+{"number": 7580, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: no environment alignment"}
+{"number": 7577, "reason": "non-task title prefix: chore: add in more react standards", "title": "chore: add in more react standards"}
+{"number": 7569, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(theme): convert theme bg to hex for Electron backgroundColor"}
+{"number": 7567, "reason": "no test file changes (neither backend nor frontend)", "title": " fix: preserve query params without values by not appending = sign"}
+{"number": 7566, "reason": "no test file changes (neither backend nor frontend)", "title": "collapsible request/response split in request tab"}
+{"number": 7564, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: coerce numeric header values to string during Postman collection import"}
+{"number": 7562, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: update Bru constructor to accept a single options obj for improved readability"}
+{"number": 7561, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: support for pkg installer"}
+{"number": 7555, "reason": "bot author: app/dependabot", "title": "chore(deps): bump dorny/test-reporter from 2 to 3"}
+{"number": 7550, "reason": "no test file changes (neither backend nor frontend)", "title": "perf: optimize DNS resolution to reduce request latency"}
+{"number": 7549, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: allow __Host- prefixed cookies to be stored via script API"}
+{"number": 7516, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add hasCookie hint to autocomplete suggestions for cookie management"}
+{"number": 7513, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: include pinned data in filtering for more accurate results in env variables search"}
+{"number": 7512, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: clear draft on save and update dependencies in useEffect"}
+{"number": 7507, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: optimize formik value handling and improve save conditions"}
+{"number": 7501, "reason": "no test file changes (neither backend nor frontend)", "title": "feat(bruno-js): add hasCookie function to cookie jar shim"}
+{"number": 7499, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(import): resolve EEXIST error when importing OpenAPI collections with paths folder arrangement"}
+{"number": 7498, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: forward cookies from 4XX/5XX responses in collection runner and CLI"}
+{"number": 7492, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(RequestTabPanel): update loading message for better user feedback"}
+{"number": 7489, "reason": "no test file changes (neither backend nor frontend)", "title": "fix(openapi-sync): simplify IPC calls, fix state priorities, and improve stored spec missing UX"}
+{"number": 7483, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: unify OpenAPI comparison logic, improve OpenAPI Sync tab banner consistency and error handling"}
+{"number": 7482, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: add `OAuth 1.0` authentication support"}
+{"number": 7481, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: add missing scrollbar-color property"}
+{"number": 7479, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: remove .bru reference in error message"}
+{"number": 7476, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: convert non-string variable values to strings during postman import"}
+{"number": 7471, "reason": "no test file changes (neither backend nor frontend)", "title": "Replace SpaceX external API with local graphql-yoga mock server"}
+{"number": 7467, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: improve OpenAPI Sync tab UX and fix sync flow bugs"}
+{"number": 7463, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: integrate deferred loading for saving state in DotEnvFileEditor"}
+{"number": 7461, "reason": "no test file changes (neither backend nor frontend)", "title": "Feat/openapi sync beta tag"}
+{"number": 7459, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: simplify environment list actions and improve styling"}
+{"number": 7455, "reason": "non-task title prefix: revert \"workspace renaming with path upd", "title": "Revert \"workspace renaming with path update\""}
+{"number": 7454, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: prevent white flash on startup with dark theme"}
+{"number": 7444, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: multipart header check"}
+{"number": 7443, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: prevent autoscroll cursor when middle-clicking to close tabs"}
+{"number": 7442, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: cookie wrapper callback mode returns never-resolving Promise"}
+{"number": 7441, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: support response query filtering in safe mode"}
+{"number": 7440, "reason": "no test file changes (neither backend nor frontend)", "title": "refactor: update path imports to use utils/common/path"}
+{"number": 7437, "reason": "no test file changes (neither backend nor frontend)", "title": "workspace renaming with path update"}
+{"number": 7436, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: normalize paths when comparing workspace and redux collection paths on Windows"}
+{"number": 7429, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: add size and duration fields to CLI bru.runRequest() response"}
+{"number": 7427, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: preserve global environment color during script execution"}
+{"number": 7426, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: clear inherited DNS lookup for non-localhost URLs in redirect handling"}
+{"number": 7415, "reason": "no test file changes (neither backend nor frontend)", "title": "fix: preserve colons in OData datetimes"}
+{"number": 7409, "reason": "no test file changes (neither backend nor frontend)", "title": "feat: persist window frames and widths"}
+{"number": 7408, "reason": "no test file changes (neither backend nor frontend)", "title": "enhance OpenAPI sync with validation, enum support, and bug fixes"}

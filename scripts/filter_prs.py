@@ -54,10 +54,7 @@ IGNORE_PATH_PATTERNS = (
 
 SIGNAL_LABELS = {"bug", "feature", "enhancement", "fix"}
 
-# Frontend test pattern is shared across sources for now (only fastapi-template
-# has Playwright; mcp-context-forge has none, so this regex matches nothing
-# there).
-_FRONTEND_TEST_RE = re.compile(r"^frontend/.*\.(spec|test)\.[tj]sx?$")
+_DEFAULT_FRONTEND_TEST_RE = re.compile(r"^frontend/.*\.(spec|test)\.[tj]sx?$")
 
 
 def _author_login(pr: dict[str, Any]) -> str:
@@ -117,14 +114,25 @@ def score(
     if not paths:
         return 0, reasons, "no files", signals
 
+    if source.path_exclude_re:
+        excl = re.compile(source.path_exclude_re)
+        hit = next((p for p in paths if excl.search(p)), None)
+        if hit:
+            return 0, reasons, f"excluded path region: {hit}", signals
+
     meaningful_paths = [p for p in paths if not _is_ignorable_path(p)]
     if not meaningful_paths:
         return 0, reasons, "only docs/ci/lock files", signals
 
     s = 0
     backend_test_re = re.compile(source.backend_test_path_re)
+    frontend_test_re = (
+        re.compile(source.frontend_test_path_re)
+        if source.frontend_test_path_re
+        else _DEFAULT_FRONTEND_TEST_RE
+    )
     backend_tests = [p for p in meaningful_paths if backend_test_re.match(p)]
-    frontend_tests = [p for p in meaningful_paths if _FRONTEND_TEST_RE.match(p)]
+    frontend_tests = [p for p in meaningful_paths if frontend_test_re.match(p)]
     signals["backend_tests"] = len(backend_tests)
     signals["frontend_tests"] = len(frontend_tests)
 
