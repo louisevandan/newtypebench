@@ -1,1 +1,5 @@
-{"duration_s": 358.04132312501315, "error": null, "f2p": 5, "fallback": null, "instance_id": "usebruno__bruno-7911", "p2p": 0, "pr": 7911, "status": "exact", "title": "fix: restore saved credentials when switching back to original auth mode"}
+{"duration_s": 8.828418166958727, "error": null, "f2p": 5, "fallback": null, "instance_id": "usebruno__bruno-7911", "p2p": 0, "pr": 7911, "status": "exact", "title": "fix: restore saved credentials when switching back to original auth mode"}
+{"duration_s": 261.36930087499786, "error": null, "f2p": 1, "fallback": null, "instance_id": "usebruno__bruno-7895", "p2p": 0, "pr": 7895, "status": "exact", "title": "fix: relative path getting stored as absolute on windows"}
+{"duration_s": 336.96996854199097, "error": null, "f2p": 1, "fallback": null, "instance_id": "usebruno__bruno-7877", "p2p": 0, "pr": 7877, "status": "exact", "title": "feature: open in terminal from manage workspace"}
+{"duration_s": 1202.6619585829321, "error": null, "f2p": 0, "fallback": null, "instance_id": "usebruno__bruno-7853", "p2p": 56, "pr": 7853, "status": "test_only", "title": "fix: send-request shortcut"}
+{"duration_s": 250.21911337506026, "error": null, "f2p": 1, "fallback": null, "instance_id": "usebruno__bruno-7762", "p2p": 0, "pr": 7762, "status": "exact", "title": "feat: add new parameter \"apiKeyHeaderName\" for \"apikey\" mode"}

@@ -132,6 +132,39 @@ v1 에 등록된 source 는 두 개:
 
 차후 Phase 3 이후 **backend 확장 source 1-2 개 추가** (smithyhq/sqladmin 등) + **frontend-only standalone source** (예: shadcn 기반 Vite 앱) 검토.
 
+#### 3.3.1 Frontend source 후속 리서치 (2026-05-23)
+
+정확 일치 OSS 가 거의 부재한 사실이 200-PR 실측으로 확인됨. 정체성을 **"Vite + React + Tailwind + Playwright"** 에서 **"React + Tailwind + Playwright (Vite | Webpack | rsbuild)"** 로 한 칸 양보. AGPL/proprietary 라이선스는 dataset publish 차단 정책 유지.
+
+| Repo | Stars | License | Stack | Frontend test | 평가 |
+|---|---:|---|---|---|---|
+| usebruno/bruno | 44k | MIT | Electron + rsbuild + Tailwind | Playwright (root) | **채택 ✅** (frontend_runner_kind=playwright_direct, 첫 instance 산출됨) |
+| triggerdotdev/trigger.dev | 15k | Apache-2 | Remix + Vite + Tailwind | Playwright (root) | **2순위 ★** — Phase 1+ 등록 후보 |
+| appsmithorg/appsmith | 39k | Apache-2 | webpack + Tailwind + Cypress (Playwright 신규) | Playwright 일부 | Cypress 메인이라 task pool 작음. **Java backend 보유 → §3.5 sister 후보** |
+| activepieces/activepieces | 22k | MIT (ee/ 제외) | Vite + Tailwind v4 + Radix | Playwright 있으나 PR 비율 0.5% | 채택했으나 yield 0 (probe-only registered) |
+| Mintplex-Labs/anything-llm | 60k | MIT | Vite + Tailwind | ❌ Playwright 부재 | 탈락 |
+| coollabsio/coolify | 55k | Apache-2 | Vite + Tailwind | ❌ Playwright 부재 | 탈락 |
+| documenso/documenso | 12k | AGPL-3.0 | — | — | **라이선스 차단** |
+| plane / twenty / AppFlowy / ToolJet / formbricks | — | AGPL/MPL/NOASSERTION | — | — | **라이선스 차단** |
+| tldraw/tldraw | 47k | 자체 (production-restricted) | Vite + Playwright | ✅ | dataset publish 불가 |
+
+### 3.5 Sister benchmark — PrototypeBench-Spring (미착수 / 보류)
+
+PrototypeBench 의 v1 정체성 (Python FastAPI 중심) 을 양보하지 않으면서 **Java/Spring Boot 백엔드 평가** 를 별도 trail 로 확장. 결정: **별도 sister repo + 하네스 일부 공유**.
+
+| 항목 | 결정 / 후보 |
+|---|---|
+| 이름 | `PrototypeBench-Spring` (TBD) |
+| Repo | 별도 (`github.com/prototypebench/prototypebench-spring` 예상) |
+| 하네스 공유 | 1순위: 현 repo `harness/` 를 git submodule. 2순위 (안정화 후): PyPI `prototypebench-harness` 분리 |
+| Test runner | JUnit 5 (Surefire XML) — 기존 `harness/junit.py` 가 호환 |
+| Build tool | Maven (`mvn`) 또는 Gradle (`./gradlew`) — `SourceConfig` 에 `language` 분기 필드 추가 필요 |
+| Image base | `eclipse-temurin:21-jdk` 추정 |
+| 첫 task source 후보 | `appsmithorg/appsmith` (Apache-2, 39k★, app/server = Java 백엔드, 411 PR/yr). v1 launch 이후 정밀 검증 |
+| 활성화 조건 | PrototypeBench v1 (Phase 4) launch 완료 + frontend pool 안정화 후 |
+
+PrototypeBench v1 은 정체성 ("AI-native Python+JS stack") 유지. Spring sister 는 별도 narrative ("Enterprise Java agent benchmark") 로 분리 평가.
+
 ### 3.4 SourceConfig 추상화
 
 새 source 추가는 `harness/sources/<short_name>.py` 한 파일:
@@ -232,109 +265,126 @@ register(SourceConfig(
 
 ---
 
-## 7.5 진행 상황 (2026-04-20 갱신)
+## 7.5 진행 상황 (2026-05-23 갱신)
 
 | Phase | 항목 | 상태 |
 |---|---|---|
+| **1** | **태스크 큐레이션 파이프라인** | **✅ 완료** |
 | 1 | repo 생성, 스키마 v0.1, validator | ✅ |
 | 1 | PR 크롤러 (multi-source) | ✅ |
-| 1 | filter (kind 라우팅 + uv-era cutoff) | ✅ |
-| 1 | seed 큐레이션 → instance 자동 빌드 | ✅ **71 / 40-60** (목표 초과) — fastapi-template 3 + mcp-context-forge 68 |
+| 1 | filter (kind 라우팅 + uv-era cutoff + path_exclude_re) | ✅ |
+| 1 | seed 큐레이션 → instance 자동 빌드 | ✅ **75 / 40-60** (목표 초과) — fastapi-template 3 + mcp-context-forge 68 + bruno 4 (frontend) |
+| **2** | **평가 하네스 (Phase 2 코어 + frontend extension)** | **✅ 완료** |
 | 2 | 하네스 architecture doc | ✅ |
 | 2 | Backend FAIL_TO_PASS extractor (Docker) | ✅ |
 | 2 | Agent runner v1 (patch submission, 3-scenario validated) | ✅ |
 | 2 | Collection-error fallback | ✅ (#2104 검증) |
-| 2 | Frontend Playwright runner (compose stack) | ✅ (#2146 검증) |
+| 2 | Frontend Playwright runner — compose stack (fastapi-template) | ✅ (#2146 검증) |
 | 2 | SourceConfig 추상화 (multi-source) | ✅ (mcp-context-forge 검증) |
 | 2 | effective_uv_extras (extras lifecycle 대응) | ✅ |
 | 2 | batch validator + per-source artifact dir | ✅ |
 | 2 | build-from-extract → instances JSONL | ✅ |
+| 2 | **SourceConfig frontend dispatch** (compose / playwright_direct / None) | ✅ (2026-05-23, bruno end-to-end) |
+| 2 | **frontend_direct_runner.py** (single-image npm + playwright) | ✅ (2026-05-23) |
+| 2 | **Dockerfile.playwright-electron** (Xvfb + GTK/NSS/ATK for Electron e2e) | ✅ (2026-05-23) |
+| 2 | **build_from_extract kind-aware** (frontend bucket + source-driven globs) | ✅ (2026-05-23) |
 | 3 | 모델 평가 자동화 | ⏳ |
-| 4 | 공개 리더보드 | ⏳ |
+| 4 | 공개 리더보드 (HF dataset 만 선행 완료) | ⏳ (`banyaaiofficial/prototypebench-v1` published) |
+| 5 | 지속 운영 (held-out rotation, contribution guide) | ⏳ |
 
-현재 instance pool: **71 task** (fastapi-template 3 + mcp-context-forge 68), 모두 backend_only · schema valid.
+**현재 instance pool**: **75 task** (Phase 1 목표 40-60 초과)
 
-테스트 자산:
-- F2P 689 (정답 통과 기준)
-- P2P 31,644 (regression guard)
-- 합 32,333 individual test cases / full evaluation
+| Source | License | Instances | F2P 합 | P2P 합 | Stack |
+|---|---|---:|---:|---:|---|
+| fastapi-template | MIT | 3 | 7 | 77 | backend_only |
+| mcp-context-forge | Apache-2 | 68 | 682 | 31,567 | backend_only |
+| **bruno** | MIT | **4** | **8** | **0** | **frontend_only** (NEW 2026-05-23) |
+| activepieces (probe-only) | MIT/ee 제외 | 0 | — | — | yield 0 확인 |
 
-mcp-context-forge top-100 batch 결과 (incremental 캐시 + 50 신규):
-- exact 68 (68% usable rate, 누적)
-- no_signal 28 (frontend-only / docs-only / non-test-touching backend fix)
-- test_only 4
-- error 0 (effective_uv_extras fix 효과)
+**bruno top-5 batch 결과** (2026-05-23): exact 4 / test_only 1 = **80% usable rate** (#7911 F2P=5 + #7895/7877/7762 각 F2P=1; #7853 test_only F2P=0 P2P=56)
 
-→ Phase 1 의 task pool 양적 목표 (40-60) **초과 달성**. SWE-Bench Lite (300) 의 ~24% 수준.
+테스트 자산 (full eval):
+- F2P 697 · P2P 31,644 · 총 **32,341** individual test cases
+
+**Source 등록 상태**:
+- ✅ fastapi-template (compose-mode frontend runner)
+- ✅ mcp-context-forge (backend-only)
+- ✅ bruno (playwright_direct runner, electron base image)
+- ✅ activepieces (probe-registered, frontend mining yield ≈ 0)
+- 🔜 trigger.dev (2순위 후보, §3.3.1)
+
+→ Phase 1·2 모두 **완료**. SWE-Bench Lite (300) 의 ~24% 수준. 다음 → Phase 3 (모델 평가).
 
 ---
 
 ## 8. 다음 작업 (Phase 별)
 
-### Phase 1 — 태스크 큐레이션 파이프라인 ⏱ 우선 착수 권장
+### Phase 1 — 태스크 큐레이션 파이프라인 ✅ 완료
 
-**목표**: `full-stack-fastapi-template` PR 40~60개를 재현 가능한 태스크 번들로 변환.
+**목표**: PR 40~60개를 재현 가능한 태스크 번들로 변환 → **72 instances 달성**.
 
-- [ ] `github.com/prototypebench/prototypebench` 메인 repo 생성 (public 예정이나 초기엔 private)
-- [ ] 태스크 스키마 설계 (참고: SWE-bench 의 `instances.jsonl` 포맷):
-  - `instance_id`
-  - `repo` / `base_commit` / `head_commit`
-  - `problem_statement` (이슈 본문 또는 PR description 에서 추출)
-  - `patch` (정답 diff)
-  - `test_patch` (테스트 파일 diff)
-  - `FAIL_TO_PASS` / `PASS_TO_PASS` (테스트 분류)
-  - `environment_setup_commit` / `uv_lock` / `bun_lockb`
-- [ ] PR 크롤러 스크립트 (`gh pr list --repo fastapi/full-stack-fastapi-template --state merged --json`):
+- [x] `github.com/prototypebench/prototypebench` 메인 repo 생성
+- [x] 태스크 스키마 설계 (`schemas/task_instance.schema.json`, v0.1):
+  - `instance_id`, `repo`, `base_commit` / `head_commit`
+  - `problem_statement`, `patch`, `test_patch` (+ `test_patch_backend` / `test_patch_frontend`)
+  - `fail_to_pass` / `pass_to_pass` (`{backend, frontend}` 이중 bucket)
+  - `environment` (python/node version, uv/bun lock SHA, docker compose SHA)
+  - `stack_domain`, `contamination_tier`, `schema_version`
+- [x] PR 크롤러 스크립트 (`scripts/crawl_prs.py`) — multi-source registry 기반
   - dependabot / chore / docs PR 필터링
-  - 테스트 파일 수정 포함 PR 우선
-  - closing issue 자동 링크 (취약한 경우 PR description 파싱 fallback)
-- [ ] 10개 seed 태스크 수동 큐레이션 — 파이프라인 end-to-end 검증용
-- [ ] 남은 30~50개 반자동 확장
+  - 테스트 파일 수정 포함 PR 우선 (kind 라우팅)
+  - closing issue 자동 링크
+- [x] 10개 seed 태스크 수동 큐레이션 (`tasks/drafts.jsonl`)
+- [x] 자동화 확장 → 72 instance (3 fastapi-template + 68 mcp-context-forge + 1 bruno)
 
-**산출물**: `tasks/` 디렉토리 + `instances.jsonl`.
+**산출물**: `tasks/instances.*.jsonl` (3 sources) + `dataset/instances.jsonl` (HF publish ready)
 
-### Phase 2 — 하네스 (runner)
+### Phase 2 — 하네스 (runner) ✅ 완료
 
 **목표**: 태스크를 실제로 에이전트에게 주고 채점하는 자동화.
 
-- [ ] Banya-framework 의 `agent-evaluation/` SWE-bench adapter 를 참고로 **PrototypeBench 전용 runner** 작성 (코드 복사 OK, 의존성 분리 필수 — 이 프로젝트는 독립)
-- [ ] 차이점 대응:
+- [x] PrototypeBench 전용 runner 작성 (`harness/`):
+  - backend: pytest junitxml extractor (Docker compose-based)
+  - frontend (compose mode): fastapi-template 의 compose stack
+  - frontend (playwright_direct mode): single-image npm + playwright (bruno)
+- [x] 차이점 대응:
   - 이중 테스트 (pytest + Playwright) 실행
   - docker-compose 기반 DB/백/프런트 동시 기동
-  - 프런트 빌드 타임 이슈 (Vite HMR, Playwright 웹서버 대기)
-- [ ] 스코어링: `FAIL_TO_PASS` 전체 통과 + `PASS_TO_PASS` 미회귀 → 1점, 그 외 0점 (SWE-bench 컨벤션)
-- [ ] 태스크당 trace (에이전트 행동 로그) 저장 — **실패 triage 에 필수**
+  - 프런트 빌드 타임 이슈 (Playwright webServer 대기 / Xvfb / Electron deps)
+- [x] 스코어링 (`harness/score.py`): F2P 전체 통과 + P2P 미회귀 → 1, 그 외 0
+- [x] 태스크당 trace (logs/, summary.json) 저장 — 실패 triage 표준화
 
-### Phase 3 — 내부 베타
+### Phase 3 — 내부 베타 ⏳ 진행 예정 (next)
 
 - [ ] Banya 에이전트 v N / v N-1 비교 평가
 - [ ] 3~5개 프런티어 모델 평가 (Claude Opus 4.7, Sonnet 4.6, GPT-5, Gemini 3, 등)
-- [ ] 비용 추정 필요 (40~60 태스크 × 5 모델 × 에이전트 루프 ≈ 수백~수천 달러/회차)
+- [ ] 비용 추정 필요 (72 태스크 × 5 모델 × 에이전트 루프 ≈ 수백~수천 달러/회차)
 - [ ] 태스크별 실패 분석 → 태스크 품질 개선 (너무 쉬움/모호함/테스트 부실 제거)
 
-### Phase 4 — 공개 베타
+### Phase 4 — 공개 베타 ⏳
 
 론칭 채널 · 메시지 · KPI 등 종합 전략은 [`docs/launch-strategy.md`](docs/launch-strategy.md).
 
 - [ ] `.ai` / `.com` 도메인 방어 확보
 - [ ] 리더보드 사이트 (`prototypebench.org`) — 기술 선택 필요 (단순 static 이면 Astro + GitHub Pages 무난)
-- [ ] Methodology 문서 공개
+- [ ] Methodology 문서 공개 (`docs/evaluation-procedure.md` 초안 ✅)
 - [ ] 제출 양식 / 재현성 요구사항 정의
 - [ ] Social preview image (1280×640 PNG)
 - [ ] CONTRIBUTING.md / CODE_OF_CONDUCT.md / issue templates (GitHub Community Standards)
 - [ ] GitHub Releases v1.0.0 — 첫 공식 corpus + harness snapshot
-- [ ] Hugging Face dataset publish (`prototypebench/prototypebench-v1`)
+- [x] Hugging Face dataset publish (`banyaaiofficial/prototypebench-v1`) — commit 32e72d7
 - [ ] HF Spaces leaderboard mirror
 - [ ] Hacker News 론칭 포스트 (Show HN, 화요일 PT 오전)
 - [ ] Newsletter pitch (Latent Space, AlphaSignal, TLDR AI, Import AI)
 - [ ] Twitter launch thread (8-12 tweets)
 - [ ] awesome-list PR 침투 (`awesome-llm-eval`, `awesome-coding-llm`, `awesome-fastapi` 등)
 
-### Phase 5 — 지속 운영
+### Phase 5 — 지속 운영 ⏳
 
 - [ ] 분기별 태스크 셋 업데이트 (오염 방지 + 신규 PR 반영)
 - [ ] held-out 셋 로테이션
 - [ ] 기여 가이드 (외부 태스크 제안 수용)
+- [ ] (§3.5 참조) PrototypeBench-Spring sister benchmark 부트스트랩
 
 ---
 
