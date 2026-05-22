@@ -37,4 +37,8 @@ CONFIG = register(SourceConfig(
     },
     extra_services=[],
     uv_era_min_merged_at="2026-01-20",      # PR #2090 introduced uv workspaces
+
+    # Frontend: source repo's own compose stack orchestrates everything.
+    frontend_runner_kind="compose",
+    frontend_dir="frontend",
 ))

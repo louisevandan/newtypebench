@@ -275,6 +275,7 @@ def batch_extract(
                         head_commit=head_commit,
                         test_patch=test_patch or None,
                         playwright_args=scoped or None,
+                        source=source,
                     )
                     result_fe = fe.extract_frontend(
                         spec_fe, work_root=work_dir,

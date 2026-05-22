@@ -23,6 +23,7 @@ from pathlib import Path
 from rich.console import Console
 
 from . import frontend_runner, git_ops, playwright_report
+from .sources import SourceConfig
 
 
 @dataclass
@@ -33,6 +34,7 @@ class FrontendExtractSpec:
     head_commit: str
     test_patch: str | None = None     # frontend test diff (optional)
     playwright_args: list[str] | None = None  # e.g. ["tests/sign-up.spec.ts"]
+    source: SourceConfig | None = None  # required for source-driven dispatch
 
 
 @dataclass
@@ -113,12 +115,32 @@ def extract_frontend(
     base_out = out_dir / "base"
     head_out = out_dir / "head"
 
+    # Resolve dispatch + frontend dir from source config (with fastapi-template
+    # legacy defaults so callers that don't pass `source` still work).
+    runner_kind = (spec.source.frontend_runner_kind if spec.source else None) or "compose"
+    fe_dir = (spec.source.frontend_dir if spec.source else None) or "frontend"
+
+    if runner_kind == "playwright_direct":
+        result.error = (
+            "playwright_direct frontend runner is not yet implemented. "
+            "frontend_direct_runner.py lands in a follow-up commit."
+        )
+        _write_summary()
+        return result
+    if runner_kind != "compose":
+        result.error = f"unknown frontend_runner_kind: {runner_kind!r}"
+        _write_summary()
+        return result
+
     # --- BASE ---
     console.log(f"checkout base {spec.base_commit[:10]}")
     git_ops.checkout(repo_dir, spec.base_commit)
 
-    if not (repo_dir / "frontend").exists():
-        result.error = "base_commit has no frontend/ dir — likely pre-monorepo. Unsupported."
+    if not (repo_dir / fe_dir).exists():
+        result.error = (
+            f"base_commit has no {fe_dir}/ dir — likely pre-monorepo or wrong "
+            f"source. Unsupported."
+        )
         _write_summary()
         return result
 

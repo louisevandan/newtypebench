@@ -75,6 +75,50 @@ class SourceConfig:
     # `packages/ee/` regions). Matches against any single changed-file path.
     path_exclude_re: str | None = None
 
+    # ----- Frontend runner (optional) ----------------------------------------
+    # Two execution models supported:
+    #
+    #   "compose"           — source repo's own docker-compose orchestrates
+    #                         db + backend + dev-frontend + playwright service.
+    #                         fastapi-template uses this. Harness invokes
+    #                         `docker compose -f compose.yml -f compose.override.yml
+    #                         -f <our overlay> run playwright bunx playwright test`.
+    #
+    #   "playwright_direct" — Playwright's own `webServer` config spawns dev
+    #                         servers in-process; harness runs `npm install`
+    #                         + `npx playwright test` inside a single
+    #                         Playwright base image. No compose stack required.
+    #                         bruno uses this.
+    #
+    # None ⇒ source doesn't support frontend extraction (most backend-only sources).
+    frontend_runner_kind: str | None = None
+
+    # Workspace path of the frontend app — replaces hardcoded "frontend" dir
+    # check in frontend_extract.py. "frontend" for fastapi-template,
+    # "packages/bruno-app" for bruno, etc.
+    frontend_dir: str | None = None
+
+    # ── playwright_direct mode only ─────────────────────────────────────────
+    # Base image with browsers preinstalled, e.g.
+    # "mcr.microsoft.com/playwright:v1.50.0-jammy".
+    frontend_docker_image: str | None = None
+
+    # `npm ci` / `bun install` / `yarn install --frozen-lockfile` etc.
+    frontend_install_cmd: list[str] = field(default_factory=list)
+
+    # Per-workspace dependent builds that must run before playwright test
+    # (e.g. bruno's `npm run build:bruno-common`). One argv list per step.
+    frontend_pre_test_cmd: list[list[str]] = field(default_factory=list)
+
+    # The Playwright invocation itself, e.g.
+    # ["npx", "playwright", "test", "--project=default", "--reporter=json"].
+    frontend_test_cmd: list[str] = field(default_factory=list)
+
+    # Path (relative to repo root) of the JSON report Playwright writes.
+    # bruno's playwright.config.ts hardcodes "playwright-report/results.json";
+    # other repos may use `PLAYWRIGHT_JSON_OUTPUT_NAME` env instead.
+    frontend_json_report_path: str | None = None
+
 
 # --------------------------------------------------------------------------
 # Registry

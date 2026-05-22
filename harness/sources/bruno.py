@@ -50,4 +50,29 @@ CONFIG = register(SourceConfig(
 
     # No license carve-outs needed.
     path_exclude_re=None,
+
+    # bruno's Playwright config uses webServer to auto-spawn dev:web + bruno-tests
+    # mock server; no docker-compose orchestration is required. The harness runs
+    # `npm install` + `npx playwright test --project=default` inside a single
+    # Playwright base image. (Implementation lands in a follow-up commit.)
+    frontend_runner_kind="playwright_direct",
+    frontend_dir="packages/bruno-app",
+    frontend_docker_image="mcr.microsoft.com/playwright:v1.51.1-jammy",
+    frontend_install_cmd=["npm", "ci"],
+    # bruno-app depends on these workspaces being built first.
+    frontend_pre_test_cmd=[
+        ["npm", "run", "build:bruno-common"],
+        ["npm", "run", "build:bruno-requests"],
+        ["npm", "run", "build:bruno-filestore"],
+        ["npm", "run", "build:bruno-converters"],
+        ["npm", "run", "build:bruno-query"],
+        ["npm", "run", "build:graphql-docs"],
+        ["npm", "run", "build:schema-types"],
+    ],
+    frontend_test_cmd=[
+        "npx", "playwright", "test",
+        "--project=default",
+        "--reporter=json",
+    ],
+    frontend_json_report_path="playwright-report/results.json",
 ))
