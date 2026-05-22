@@ -22,7 +22,7 @@ from pathlib import Path
 
 from rich.console import Console
 
-from . import frontend_runner, git_ops, playwright_report
+from . import frontend_direct_runner, frontend_runner, git_ops, playwright_report
 from .sources import SourceConfig
 
 
@@ -120,17 +120,24 @@ def extract_frontend(
     runner_kind = (spec.source.frontend_runner_kind if spec.source else None) or "compose"
     fe_dir = (spec.source.frontend_dir if spec.source else None) or "frontend"
 
-    if runner_kind == "playwright_direct":
-        result.error = (
-            "playwright_direct frontend runner is not yet implemented. "
-            "frontend_direct_runner.py lands in a follow-up commit."
-        )
-        _write_summary()
-        return result
-    if runner_kind != "compose":
+    if runner_kind not in ("compose", "playwright_direct"):
         result.error = f"unknown frontend_runner_kind: {runner_kind!r}"
         _write_summary()
         return result
+
+    def _run_phase(phase_out: Path):
+        """Dispatch to the right runner module; both return the same shape."""
+        if runner_kind == "compose":
+            return frontend_runner.run_phase(
+                repo_dir=repo_dir, project=project, out_dir=phase_out,
+                extra_args=spec.playwright_args,
+            )
+        # playwright_direct
+        return frontend_direct_runner.run_phase_direct(
+            repo_dir=repo_dir, source=spec.source,  # type: ignore[arg-type]
+            instance_id=spec.instance_id, out_dir=phase_out,
+            extra_args=spec.playwright_args,
+        )
 
     # --- BASE ---
     console.log(f"checkout base {spec.base_commit[:10]}")
@@ -152,20 +159,17 @@ def extract_frontend(
             _write_summary()
             return result
 
-    console.log("building + running playwright (base)")
+    console.log(f"running playwright (base, {runner_kind})")
     t0 = time.monotonic()
     try:
-        run_b, base_outcomes = frontend_runner.run_phase(
-            repo_dir=repo_dir, project=project, out_dir=base_out,
-            extra_args=spec.playwright_args,
-        )
+        run_b, base_outcomes = _run_phase(base_out)
     except frontend_runner.FrontendRunnerError as e:
         result.error = f"playwright base phase failed: {e}"
         _write_summary()
         return result
     base_out.mkdir(parents=True, exist_ok=True)
-    (base_out / "compose.stdout.log").write_text(run_b.stdout)
-    (base_out / "compose.stderr.log").write_text(run_b.stderr)
+    (base_out / "runner.stdout.log").write_text(run_b.stdout)
+    (base_out / "runner.stderr.log").write_text(run_b.stderr)
     result.base = _phase_summary(
         base_outcomes, run_b.returncode, run_b.json_present, time.monotonic() - t0
     )
@@ -175,20 +179,17 @@ def extract_frontend(
     git_ops.reset_hard(repo_dir, spec.base_commit)
     git_ops.checkout(repo_dir, spec.head_commit)
 
-    console.log("building + running playwright (head)")
+    console.log(f"running playwright (head, {runner_kind})")
     t0 = time.monotonic()
     try:
-        run_h, head_outcomes = frontend_runner.run_phase(
-            repo_dir=repo_dir, project=project, out_dir=head_out,
-            extra_args=spec.playwright_args,
-        )
+        run_h, head_outcomes = _run_phase(head_out)
     except frontend_runner.FrontendRunnerError as e:
         result.error = f"playwright head phase failed: {e}"
         _write_summary()
         return result
     head_out.mkdir(parents=True, exist_ok=True)
-    (head_out / "compose.stdout.log").write_text(run_h.stdout)
-    (head_out / "compose.stderr.log").write_text(run_h.stderr)
+    (head_out / "runner.stdout.log").write_text(run_h.stdout)
+    (head_out / "runner.stderr.log").write_text(run_h.stderr)
     result.head = _phase_summary(
         head_outcomes, run_h.returncode, run_h.json_present, time.monotonic() - t0
     )
