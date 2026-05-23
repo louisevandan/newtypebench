@@ -92,4 +92,10 @@ CONFIG = register(SourceConfig(
     # (see docs/phase3-fe-smoke-analysis.md, #7947 root-cause).
     frontend_test_diff_paths=["tests/**"],
     frontend_test_diff_strip_prefix="",  # testDir == ./tests at repo root
+
+    # Playwright snapshot tests (visual / state snapshots) are inherently
+    # flaky across base vs score-time runs even with byte-identical patches
+    # — see docs/phase3-fe-smoke-analysis.md (#7948). Excluded from F2P/P2P
+    # so they don't fail the binary score. Still run, just advisory.
+    advisory_test_path_re=r"^tests/snapshots/",
 ))

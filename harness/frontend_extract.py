@@ -208,13 +208,38 @@ def extract_frontend(
 
     base_failed_or_missing = base_fail | new_in_head
 
-    result.fail_to_pass = sorted(base_failed_or_missing & head_pass)
-    result.pass_to_pass = sorted((base_pass & head_pass) - set(result.fail_to_pass))
+    # Source-driven advisory filter, P2P-only: tests matching
+    # source.advisory_test_path_re (e.g. Playwright snapshot tests) are kept
+    # OUT of P2P (where they cause spurious binary failures via base/score-time
+    # rendering drift) but stay IN F2P (where they're often the actual feature
+    # being tested by a snapshot-style spec — excluding them would erase
+    # legitimate regression signal and leave the instance with F2P=0).
+    import re
+    src_cfg = spec.source
+    adv_re = (
+        re.compile(src_cfg.advisory_test_path_re)
+        if (src_cfg and src_cfg.advisory_test_path_re)
+        else None
+    )
+    def _is_advisory(t: str) -> bool:
+        return bool(adv_re and adv_re.search(t))
+
+    f2p_raw = base_failed_or_missing & head_pass
+    p2p_raw = (base_pass & head_pass) - f2p_raw
+    p2p_advisory = {t for t in p2p_raw if _is_advisory(t)}
+
+    result.fail_to_pass = sorted(f2p_raw)
+    result.pass_to_pass = sorted(p2p_raw - p2p_advisory)
 
     if new_in_head:
         result.notes.append(
             f"{len(new_in_head)} spec(s) absent from base run — counted as F2P "
             f"candidates (typical for PRs that add new e2e tests)."
+        )
+    if p2p_advisory:
+        result.notes.append(
+            f"{len(p2p_advisory)} advisory P2P test(s) excluded "
+            f"(matched source.advisory_test_path_re; F2P kept intact)."
         )
 
     _write_summary()

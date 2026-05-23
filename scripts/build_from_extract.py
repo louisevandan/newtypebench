@@ -160,6 +160,15 @@ def build_instance_from_extract(
 
     fail_to_pass_raw = list(summary.get("fail_to_pass") or [])
     pass_to_pass_raw = list(summary.get("pass_to_pass") or [])
+
+    # Source-driven advisory filter, P2P-only — see frontend_extract.py for
+    # the rationale. Snapshot-style tests are flaky for regression-guard
+    # purposes but legitimate for feature verification, so we keep them in
+    # F2P (where they're the actual test) and drop only from P2P.
+    if source.advisory_test_path_re:
+        import re as _re
+        _adv = _re.compile(source.advisory_test_path_re)
+        pass_to_pass_raw = [t for t in pass_to_pass_raw if not _adv.search(t)]
     # Place F2P/P2P into the correct bucket based on which runner produced
     # the summary. extract.py produces backend (pytest nodeids); frontend_extract.py
     # produces frontend (Playwright spec titles).

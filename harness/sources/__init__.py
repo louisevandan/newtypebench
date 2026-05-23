@@ -131,6 +131,14 @@ class SourceConfig:
     # bruno: "" (testDir = ./tests at repo root).
     frontend_test_diff_strip_prefix: str = ""
 
+    # Tests matching this regex are *advisory* — they're extracted and run
+    # at score time for visibility but excluded from both `fail_to_pass` and
+    # `pass_to_pass` sets, so they don't affect the binary score. Intended
+    # for brittle visual / snapshot tests whose pass/fail can flip on
+    # rendering / timing differences unrelated to the agent's edit.
+    # bruno: r"^tests/snapshots/" (Playwright snapshot tests).
+    advisory_test_path_re: str | None = None
+
 
 # --------------------------------------------------------------------------
 # Registry
