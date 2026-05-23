@@ -79,8 +79,8 @@ PrototypeBench is an open benchmark for evaluating AI coding agents on **full-st
 | Total instances | **123** |
 | Sources | 3 (`fastapi/full-stack-fastapi-template`, `IBM/mcp-context-forge`, `usebruno/bruno`) |
 | `FAIL_TO_PASS` tests | 940 |
-| `PASS_TO_PASS` regression-guard tests | 31,971 |
-| Total test cases per full eval | **32,911** |
+| `PASS_TO_PASS` regression-guard tests | 31,945 |
+| Total test cases per full eval | **32,885** |
 | stack_domain | 71 backend_only + 52 frontend_only (fullstack instances in later versions) |
 | contamination_tier | 123 held_out (all post-2026-01-01) |
 | Schema version | 0.1 |
@@ -125,7 +125,7 @@ Full schema: https://github.com/prototypebench/prototypebench/blob/main/schemas/
 |---|---:|---|---:|---:|---:|---|
 | [`fastapi/full-stack-fastapi-template`](https://github.com/fastapi/full-stack-fastapi-template) | 42.7k | MIT | 3 | 7 | 77 | backend_only |
 | [`IBM/mcp-context-forge`](https://github.com/IBM/mcp-context-forge) | 3.6k | Apache-2 | 68 | 682 | 31,567 | backend_only |
-| [`usebruno/bruno`](https://github.com/usebruno/bruno) | 44k | MIT | **52** | **251** | **327** | **frontend_only** (NEW v0.2) |
+| [`usebruno/bruno`](https://github.com/usebruno/bruno) | 44k | MIT | **52** | **251** | **301** | **frontend_only** (NEW v0.2) |
 
 All PRs are **merged PRs with maintainer-reviewed tests**. Task instances mine the natural atomic unit of change (one feature or fix at a time).
 
@@ -183,6 +183,7 @@ Citation format will be fixed at Phase 4 public launch. For now:
 
 ## Changelog
 
+- **v0.2.2** (2026-05-24): fix — Playwright snapshot tests (`tests/snapshots/**`) on the bruno source are now P2P-only advisory. They're kept in F2P (where they're often the actual feature test — e.g. `#7948`'s "transient request quit flow" is checked via snapshot specs) but excluded from P2P (where they cause spurious failures from rendering / timing drift between base and score-time, even with byte-identical patches). Verified `bruno#7948` with byte-identical agent_patch: previously F2P 4/4 + P2P 13/14 = score 0; now F2P 4/4 + P2P 0/0 = score 1. Total P2P across 52 bruno instances: 327 → 301 (26 snapshot tests dropped). Schema unchanged.
 - **v0.2.1** (2026-05-24): fix — bruno frontend instances rebuilt with the corrected `test_patch_frontend` extraction. Earlier v0.2 captured only `tests/**/*.spec.ts` (Playwright specs), missing the co-located fixtures (`.bru` collections, `init-user-data/preferences.json`). Result: even a byte-identical copy of the reference patch could fail at score time because specs couldn't load their fixtures. Re-verified on `bruno#7947`: F2P 0/12 → 11/12 with a byte-identical agent_patch (the remaining 1/12 is a Playwright flake unrelated to the fix). Source extraction now uses `tests/**` (entire test subtree). Instance count unchanged (52 frontend). See [docs/phase3-fe-smoke-analysis.md](https://github.com/prototypebench/prototypebench/blob/main/docs/phase3-fe-smoke-analysis.md) for the diagnostic trail.
 - **v0.2** (2026-05-23): +52 frontend_only instances from `usebruno/bruno` via the new `playwright_direct` runner (custom Playwright+Electron image with Xvfb). Corpus 71 → 123. F2P 689 → 940, P2P 31,644 → 31,971. Frontend ratio 0% → 42%. Schema v0.1 unchanged.
 - **v0.1** (2026-04-20): initial corpus. 71 backend_only instances, all held_out. Schema v0.1.
