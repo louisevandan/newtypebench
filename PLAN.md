@@ -376,9 +376,30 @@ register(SourceConfig(
 
 ### Phase 3 — 내부 베타 ⏳ 진행 예정 (next)
 
+#### 3.0 평가 인터페이스 결정 (2026-05-23, 채택)
+
+**결정**: Phase 3 부터 **agent-loop interface 우선** 채택. v1 spec 의 patch-submission 은 backward-compat 으로만 유지.
+
+**근거** — 2026-05-23 smoke test (`IBM/mcp-context-forge#3284`, F2P=1):
+- (A) 하네스 sanity (정답 patch → score): ✅ score=1, F2P 1/1, P2P 6/6 (3 분)
+- (B) Claude CLI `--print` nested (problem + 코드 excerpt → diff): ⚠ 의미적 정답 100% 일치, but **`git apply` "corrupt patch at line 12"** — context line whitespace / hunk header line-count 의 byte-exact mismatch 로 score=0
+
+→ patch-submission 은 모델의 *의미 능력* 외에 *unified-diff format reproduction* 까지 요구하는 strict interface. frontier model 도 한 줄 변경에서 byte-exact diff 못 만듦. **모델의 "코드 작성" 능력과 "텍스트 diff serialize" 능력을 섞어서 측정** → noise.
+
+**Agent-loop interface 의 모양** (Phase 3 구현):
+- 에이전트에게 작업용 repo 디렉토리를 마운트 (e.g. `claude --add-dir /tmp/pbench/<instance>/repo` 같은 형태)
+- 에이전트가 `Read`/`Edit`/`Bash(git *)` 등 tool 사용하며 file 을 직접 수정
+- 종료 후 하네스가 `git diff` 를 자동 추출 → 그 diff 로 score 채점
+- 결과: format byte-exact 자동 보장 + agent 의 실제 코드 편집 능력만 측정
+
+**v1 patch-submission 은 유지**: SWE-Bench 호환 외부 제출자가 그 길로도 채점 가능하게. dual interface.
+
+#### 3.1 모델 평가 작업
+
+- [ ] Agent-loop runner 작성 (`harness/agent_loop_runner.py`) — `claude --add-dir` / Anthropic SDK with tool-use / Gemini equivalent 의 3 backend
 - [ ] Banya 에이전트 v N / v N-1 비교 평가
-- [ ] 3~5개 프런티어 모델 평가 (Claude Opus 4.7, Sonnet 4.6, GPT-5, Gemini 3, 등)
-- [ ] 비용 추정 필요 (72 태스크 × 5 모델 × 에이전트 루프 ≈ 수백~수천 달러/회차)
+- [ ] 3~5개 프런티어 모델 평가 (Claude Opus 4.7, Sonnet 4.6, GPT-5, Gemini 3 등)
+- [ ] 비용 추정 필요 (123 태스크 × 5 모델 × 에이전트 루프 ≈ 수천 달러/회차)
 - [ ] 태스크별 실패 분석 → 태스크 품질 개선 (너무 쉬움/모호함/테스트 부실 제거)
 
 ### Phase 4 — 공개 베타 ⏳
