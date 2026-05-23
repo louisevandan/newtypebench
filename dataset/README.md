@@ -183,5 +183,6 @@ Citation format will be fixed at Phase 4 public launch. For now:
 
 ## Changelog
 
+- **v0.2.1** (2026-05-24): fix — bruno frontend instances rebuilt with the corrected `test_patch_frontend` extraction. Earlier v0.2 captured only `tests/**/*.spec.ts` (Playwright specs), missing the co-located fixtures (`.bru` collections, `init-user-data/preferences.json`). Result: even a byte-identical copy of the reference patch could fail at score time because specs couldn't load their fixtures. Re-verified on `bruno#7947`: F2P 0/12 → 11/12 with a byte-identical agent_patch (the remaining 1/12 is a Playwright flake unrelated to the fix). Source extraction now uses `tests/**` (entire test subtree). Instance count unchanged (52 frontend). See [docs/phase3-fe-smoke-analysis.md](https://github.com/prototypebench/prototypebench/blob/main/docs/phase3-fe-smoke-analysis.md) for the diagnostic trail.
 - **v0.2** (2026-05-23): +52 frontend_only instances from `usebruno/bruno` via the new `playwright_direct` runner (custom Playwright+Electron image with Xvfb). Corpus 71 → 123. F2P 689 → 940, P2P 31,644 → 31,971. Frontend ratio 0% → 42%. Schema v0.1 unchanged.
 - **v0.1** (2026-04-20): initial corpus. 71 backend_only instances, all held_out. Schema v0.1.
