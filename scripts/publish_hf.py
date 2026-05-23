@@ -38,11 +38,16 @@ def main(
     ),
 ) -> None:
     """Create or update the HF dataset repo and upload the `local` directory."""
-    token = os.environ.get("HUGGINGFACE_TOKEN") or os.environ.get("HF_TOKEN")
+    token = (
+        os.environ.get("HUGGINGFACE_TOKEN")
+        or os.environ.get("HF_TOKEN")
+        or os.environ.get("HUGGING_FACE_HUB_TOKEN")  # huggingface_hub stdlib name
+    )
     if not token:
         raise typer.BadParameter(
-            "HUGGINGFACE_TOKEN env var not set. "
-            "Get a token at https://huggingface.co/settings/tokens (write scope)."
+            "No HF token in env. Set one of: HUGGINGFACE_TOKEN / HF_TOKEN / "
+            "HUGGING_FACE_HUB_TOKEN (write scope). "
+            "Get a token at https://huggingface.co/settings/tokens."
         )
 
     if not local.exists():

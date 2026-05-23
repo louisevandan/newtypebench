@@ -72,17 +72,17 @@ PrototypeBench is an open benchmark for evaluating AI coding agents on **full-st
 
 ## Dataset Summary
 
-71 **PR-mined task instances** from active open-source repositories, each shaped for SWE-Bench-compatible execution-based scoring:
+123 **PR-mined task instances** from active open-source repositories, each shaped for SWE-Bench-compatible execution-based scoring:
 
 | Stat | Value |
 |---|---:|
-| Total instances | **71** |
-| Sources | 2 (`fastapi/full-stack-fastapi-template`, `IBM/mcp-context-forge`) |
-| `FAIL_TO_PASS` tests | 689 |
-| `PASS_TO_PASS` regression-guard tests | 31,644 |
-| Total test cases per full eval | **32,333** |
-| stack_domain | 71 backend_only (v0.1); frontend & fullstack in later versions |
-| contamination_tier | 71 held_out (all post-2026-01-01) |
+| Total instances | **123** |
+| Sources | 3 (`fastapi/full-stack-fastapi-template`, `IBM/mcp-context-forge`, `usebruno/bruno`) |
+| `FAIL_TO_PASS` tests | 940 |
+| `PASS_TO_PASS` regression-guard tests | 31,971 |
+| Total test cases per full eval | **32,911** |
+| stack_domain | 71 backend_only + 52 frontend_only (fullstack instances in later versions) |
+| contamination_tier | 123 held_out (all post-2026-01-01) |
 | Schema version | 0.1 |
 
 **Comparison**: SWE-Bench Verified has 500 instances, SWE-Bench Lite 300, HumanEval 164. v1 public-beta targets 200–300.
@@ -121,12 +121,15 @@ Full schema: https://github.com/prototypebench/prototypebench/blob/main/schemas/
 
 ## Source Composition
 
-| Source | Stars | License | Instances | F2P | P2P |
-|---|---:|---|---:|---:|---:|
-| [`fastapi/full-stack-fastapi-template`](https://github.com/fastapi/full-stack-fastapi-template) | 42.7k | MIT | 3 | 7 | 77 |
-| [`IBM/mcp-context-forge`](https://github.com/IBM/mcp-context-forge) | 3.6k | Apache-2 | 68 | 682 | 31,567 |
+| Source | Stars | License | Instances | F2P | P2P | Stack |
+|---|---:|---|---:|---:|---:|---|
+| [`fastapi/full-stack-fastapi-template`](https://github.com/fastapi/full-stack-fastapi-template) | 42.7k | MIT | 3 | 7 | 77 | backend_only |
+| [`IBM/mcp-context-forge`](https://github.com/IBM/mcp-context-forge) | 3.6k | Apache-2 | 68 | 682 | 31,567 | backend_only |
+| [`usebruno/bruno`](https://github.com/usebruno/bruno) | 44k | MIT | **52** | **251** | **327** | **frontend_only** (NEW v0.2) |
 
 All PRs are **merged PRs with maintainer-reviewed tests**. Task instances mine the natural atomic unit of change (one feature or fix at a time).
+
+`bruno` frontend instances are validated end-to-end via a Playwright + Electron runner (`harness/frontend_direct_runner.py`) — `docker run` of a custom `prototypebench/playwright-electron` image (Playwright base + GTK/NSS/ATK/Xvfb + chrome-sandbox SUID) that hosts bruno's own `webServer` config in-process. No external backend dependency.
 
 ## Data Fields
 
@@ -145,16 +148,17 @@ See the task-schema doc for full field-by-field semantics. Highlights:
 
 ## Contamination & Fairness
 
-- **Held-out by construction**: all v0.1 instances are merged after 2026-01-01 (Claude Opus 4.7 cutoff). Submitters must disclose their model cutoff for point-count adjustment.
+- **Held-out by construction**: all v0.2 instances are merged after 2026-01-01 (Claude Opus 4.7 cutoff). Submitters must disclose their model cutoff for point-count adjustment.
 - **Rotation**: held-out tier is rotated per leaderboard season (Phase 5).
 - **No vendor branding**: benchmark carries no vendor name. Hosted on `banyaaiofficial` for convenience only; the benchmark is project-neutral.
 
 ## Limitations
 
-- v0.1 is backend-only (no Playwright scoring yet — the harness supports it but frontend-kind PRs are v1+).
-- mcp-context-forge 68 instances dominate the corpus — diverse workload coverage is a v1+ priority.
+- v0.2 adds frontend coverage but no `fullstack` instances yet (single PR touching both backend and frontend in a coordinated way — pending source diversification).
+- Two backend sources cover 71 instances; `bruno` covers 52 frontend instances — single-source frontend pool is the current trade-off (see [`PLAN.md` §3.3.1-3.3.2](https://github.com/prototypebench/prototypebench/blob/main/PLAN.md) for the OSS-landscape diagnosis behind it).
 - "test strength = benchmark quality": PRs with weak tests are filtered but not perfectly. Curator review recommended.
 - Execution-based scoring requires running tests (not instantaneous) — see the harness for Docker-based reproducible runs.
+- bruno frontend instances run inside an Electron-capable Playwright image with Xvfb; cold-start (`npm run setup` + workspace builds) adds ~3-5 min per phase. Caching across `base` and `head` phases via Docker named volumes is a v0.3 target.
 
 ## Related Benchmarks
 
@@ -168,14 +172,16 @@ See the task-schema doc for full field-by-field semantics. Highlights:
 Citation format will be fixed at Phase 4 public launch. For now:
 
 ```
-@misc{prototypebench_v01,
-  title        = {PrototypeBench v0.1: An AI-native Full-Stack Coding Agent Benchmark},
+@misc{prototypebench_v02,
+  title        = {PrototypeBench v0.2: An AI-native Full-Stack Coding Agent Benchmark},
   year         = {2026},
   url          = {https://github.com/prototypebench/prototypebench},
-  note         = {71 instances across 2 source repos; execution-based scoring}
+  note         = {123 instances across 3 source repos (71 backend + 52 frontend);
+                  execution-based scoring (pytest + Playwright)}
 }
 ```
 
 ## Changelog
 
+- **v0.2** (2026-05-23): +52 frontend_only instances from `usebruno/bruno` via the new `playwright_direct` runner (custom Playwright+Electron image with Xvfb). Corpus 71 → 123. F2P 689 → 940, P2P 31,644 → 31,971. Frontend ratio 0% → 42%. Schema v0.1 unchanged.
 - **v0.1** (2026-04-20): initial corpus. 71 backend_only instances, all held_out. Schema v0.1.
