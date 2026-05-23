@@ -148,6 +148,24 @@ v1 에 등록된 source 는 두 개:
 | plane / twenty / AppFlowy / ToolJet / formbricks | — | AGPL/MPL/NOASSERTION | — | — | **라이선스 차단** |
 | tldraw/tldraw | 47k | 자체 (production-restricted) | Vite + Playwright | ✅ | dataset publish 불가 |
 
+#### 3.3.2 Mid-tier 후속 검색 — 구조적 함정 패턴 (2026-05-23)
+
+stars 기준을 1k+ → 200~ mid-tier 로 완화 + Vue 까지 명시적 허용한 추가 리서치. 결론: **bruno 가 사실상 유일한 sweet spot**. 4 후보 모두 **production-app 의 external backend 의존성** 또는 **활성도 부족** 함정.
+
+| 후보 | 함정 |
+|---|---|
+| triggerdotdev/trigger.dev (Apache-2, 15k★, Remix+Vite+Tailwind+Playwright) | `tests/e2e/` 안 spec **1 개뿐** + Postgres + 2 webServer + 3 브라우저 — environment 비용 vs yield 0% |
+| saleor/saleor-dashboard (BSD-3, 996★, Vite+React+Radix+Playwright, 777 PR/yr) | `webServer` 부재 → external Saleor backend (Django + Postgres + Redis + Celery + ES + Mailpit) 필요 |
+| marktext/marktext (MIT, 56k★, Vue+Electron+Playwright) | **70 PR/yr** — mining 절대량 부족 |
+| danny-avila/LibreChat (MIT, 37k★, Next.js+Tailwind+Playwright, 1557 PR/yr) | `start-server.js` 가 **MongoDB** 의존 + e2e PR 1.7%(27/1557) — environment 확장 + yield 모두 비효율 |
+| Vue 활성 OSS 전반 (nuxt, element-plus, vue-vben-admin, vueuse, ag-grid, primevue 등) | Vue 생태계가 **Vitest/Cypress 위주** — Playwright 도입 OSS 가 거의 부재 |
+
+**구조적 진단**:
+
+> OSS landscape 에서 **"frontend-only standalone OSS + Playwright + 활성 PR + clean license + external backend 의존성 없음"** 의 교집합이 bruno 외 사실상 부재. mid-tier 검색을 거듭해도 같은 함정 패턴 (Postgres/MongoDB/Redis/Celery/external server 의존성, 또는 PR rate 부족) 이 반복됨. bruno 의 **Electron + in-process webServer + 외부 의존성 0** 조합이 OSS landscape 의 unusual sweet spot.
+
+**v1 frontend pool 전략 확정**: **bruno 단일 source scale up** (1년 전수 crawl 시 ~190-220 instance 도달 가능). marktext/LibreChat 는 **honorable mention** — 환경 인프라 확장 (MongoDB / mongodb-memory-server) 후 v1+ 에서 재검토.
+
 ### 3.5 Sister benchmark — PrototypeBench-Spring (미착수 / 보류)
 
 PrototypeBench 의 v1 정체성 (Python FastAPI 중심) 을 양보하지 않으면서 **Java/Spring Boot 백엔드 평가** 를 별도 trail 로 확장. 결정: **별도 sister repo + 하네스 일부 공유**.
@@ -273,7 +291,7 @@ register(SourceConfig(
 | 1 | repo 생성, 스키마 v0.1, validator | ✅ |
 | 1 | PR 크롤러 (multi-source) | ✅ |
 | 1 | filter (kind 라우팅 + uv-era cutoff + path_exclude_re) | ✅ |
-| 1 | seed 큐레이션 → instance 자동 빌드 | ✅ **75 / 40-60** (목표 초과) — fastapi-template 3 + mcp-context-forge 68 + bruno 4 (frontend) |
+| 1 | seed 큐레이션 → instance 자동 빌드 | ✅ **123 / 40-60** (목표 3배 초과) — fastapi-template 3 + mcp-context-forge 68 + bruno 52 (frontend) |
 | **2** | **평가 하네스 (Phase 2 코어 + frontend extension)** | **✅ 완료** |
 | 2 | 하네스 architecture doc | ✅ |
 | 2 | Backend FAIL_TO_PASS extractor (Docker) | ✅ |
@@ -292,19 +310,21 @@ register(SourceConfig(
 | 4 | 공개 리더보드 (HF dataset 만 선행 완료) | ⏳ (`banyaaiofficial/prototypebench-v1` published) |
 | 5 | 지속 운영 (held-out rotation, contribution guide) | ⏳ |
 
-**현재 instance pool**: **75 task** (Phase 1 목표 40-60 초과)
+**현재 instance pool**: **123 task** (Phase 1 목표 40-60 의 ~2-3 배 초과)
 
 | Source | License | Instances | F2P 합 | P2P 합 | Stack |
 |---|---|---:|---:|---:|---|
 | fastapi-template | MIT | 3 | 7 | 77 | backend_only |
 | mcp-context-forge | Apache-2 | 68 | 682 | 31,567 | backend_only |
-| **bruno** | MIT | **4** | **8** | **0** | **frontend_only** (NEW 2026-05-23) |
+| **bruno** | MIT | **52** | **251** | **327** | **frontend_only** (NEW 2026-05-23) |
 | activepieces (probe-only) | MIT/ee 제외 | 0 | — | — | yield 0 확인 |
 
-**bruno top-5 batch 결과** (2026-05-23): exact 4 / test_only 1 = **80% usable rate** (#7911 F2P=5 + #7895/7877/7762 각 F2P=1; #7853 test_only F2P=0 P2P=56)
+**bruno top-100 batch 결과** (2026-05-23): 처리 62 PR (frontend signal 있는 candidate). exact 52 / test_only 6 / error 2 (timeout) / no_signal 2 = **83% usable rate**. F2P 분포 풍부 (단일 PR F2P 1~12). 가장 큰 PR: #7947 "fix: persist scroll for assertions" F2P=12.
+
+**Stack domain 분포**: backend_only 71 / frontend_only 52 (frontend ratio **42%** — §10.1 한계가 완전히 해소되어 backend ↔ frontend 비율 안정)
 
 테스트 자산 (full eval):
-- F2P 697 · P2P 31,644 · 총 **32,341** individual test cases
+- F2P 940 · P2P 31,971 · 총 **32,911** individual test cases
 
 **Source 등록 상태**:
 - ✅ fastapi-template (compose-mode frontend runner)
