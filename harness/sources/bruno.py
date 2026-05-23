@@ -83,11 +83,13 @@ CONFIG = register(SourceConfig(
         "--reporter=json",
     ],
     frontend_json_report_path="playwright-report/results.json",
-    frontend_test_diff_paths=[
-        "tests/**/*.spec.ts",
-        "tests/**/*.spec.tsx",
-        "tests/**/*.test.ts",
-        "tests/**/*.test.tsx",
-    ],
+    # NB: includes the whole tests/ tree, not just *.spec.ts. bruno's e2e
+    # specs require co-located fixtures (.bru collections, preferences.json,
+    # auth helpers, etc.) — leaving them out of test_patch means
+    # `base + test_patch + agent_patch` doesn't reproduce `head_commit`'s
+    # tree, which makes Playwright fail to load fixtures and score=0 even
+    # when the agent submits a byte-identical copy of the reference patch
+    # (see docs/phase3-fe-smoke-analysis.md, #7947 root-cause).
+    frontend_test_diff_paths=["tests/**"],
     frontend_test_diff_strip_prefix="",  # testDir == ./tests at repo root
 ))
