@@ -189,3 +189,110 @@ def score_patch(
         f"P2P {len(result.pass_to_pass_passed)}/{len(spec.pass_to_pass)}"
     )
     return result
+
+
+# ---------------------------------------------------------------------------
+# Frontend variant — Playwright instead of pytest, same scoring contract.
+# ---------------------------------------------------------------------------
+
+
+def score_patch_frontend(
+    spec: ScoreSpec,
+    *,
+    source: SourceConfig,
+    work_root: Path,
+    console: Console | None = None,
+) -> ScoreResult:
+    """Score an agent patch against a frontend (Playwright) PR.
+
+    Mirrors `score_patch` but dispatches to the source-driven frontend runner
+    (compose / playwright_direct). FAIL_TO_PASS / PASS_TO_PASS are Playwright
+    test titles (see playwright_report.parse).
+    """
+    from . import frontend_direct_runner, frontend_runner, playwright_report
+
+    console = console or Console()
+    work_root.mkdir(parents=True, exist_ok=True)
+    repo_dir = work_root / "repo"
+    out_dir = work_root / "out_score_frontend"
+    out_dir.mkdir(exist_ok=True)
+
+    result = ScoreResult(
+        instance_id=spec.instance_id, score=0,
+        mode=source.frontend_runner_kind or "compose",
+        source=source.name,
+    )
+
+    if not repo_dir.exists():
+        console.log(f"cloning {spec.repo_url} → {repo_dir}")
+        git_ops.clone(spec.repo_url, repo_dir)
+    else:
+        console.log(f"reusing checkout: {repo_dir}")
+        git_ops.clean(repo_dir)
+
+    console.log(f"checkout base {spec.base_commit[:10]}")
+    git_ops.checkout(repo_dir, spec.base_commit)
+
+    if spec.test_patch:
+        try:
+            git_ops.apply_diff(repo_dir, spec.test_patch)
+        except git_ops.GitError as e:
+            result.error = f"test_patch apply failed: {e}"
+            return result
+
+    if spec.agent_patch.strip():
+        try:
+            git_ops.apply_diff(repo_dir, spec.agent_patch)
+        except git_ops.GitError as e:
+            result.error = f"agent_patch apply failed: {e}"
+            return result
+
+    runner_kind = source.frontend_runner_kind or "compose"
+    project = f"pbench-fe-score-{spec.instance_id}"[:50]
+
+    try:
+        if runner_kind == "playwright_direct":
+            run, outcomes = frontend_direct_runner.run_phase_direct(
+                repo_dir=repo_dir, source=source,
+                instance_id=f"score-{spec.instance_id}",
+                out_dir=out_dir,
+            )
+        elif runner_kind == "compose":
+            run, outcomes = frontend_runner.run_phase(
+                repo_dir=repo_dir, project=project, out_dir=out_dir,
+            )
+        else:
+            result.error = f"unsupported frontend_runner_kind: {runner_kind!r}"
+            return result
+    except frontend_runner.FrontendRunnerError as e:
+        result.error = f"frontend runner failed: {e}"
+        return result
+
+    result.phase_returncode = run.returncode
+    (out_dir / "agent.runner.stdout.log").write_text(run.stdout)
+    (out_dir / "agent.runner.stderr.log").write_text(run.stderr)
+
+    if not run.json_present:
+        result.error = "Playwright produced no JSON report"
+        return result
+
+    passing_tests = playwright_report.passing(outcomes)
+    f2p_set = set(spec.fail_to_pass)
+    p2p_set = set(spec.pass_to_pass)
+    result.fail_to_pass_passed = sorted(f2p_set & passing_tests)
+    result.fail_to_pass_missing = sorted(f2p_set - passing_tests)
+    result.pass_to_pass_passed = sorted(p2p_set & passing_tests)
+    result.pass_to_pass_regressed = sorted(p2p_set - passing_tests)
+
+    result.score = int(
+        not result.fail_to_pass_missing and not result.pass_to_pass_regressed
+    )
+
+    (out_dir / "score_summary.json").write_text(
+        json.dumps(asdict(result), indent=2, sort_keys=True)
+    )
+    console.log(
+        f"score={result.score}  F2P {len(result.fail_to_pass_passed)}/{len(spec.fail_to_pass)}  "
+        f"P2P {len(result.pass_to_pass_passed)}/{len(spec.pass_to_pass)}"
+    )
+    return result

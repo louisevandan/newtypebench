@@ -647,11 +647,19 @@ def agent_score_cmd(
     instance_id = f"{owner.replace('-','_')}__{name}-{pr}"
     work_dir = work_root / instance_id
 
-    summary_path = work_dir / "out" / "summary.json"
+    # Auto-detect kind from source: a source with frontend_runner_kind set
+    # is a frontend-only source (bruno-style). Otherwise backend.
+    kind = "frontend" if src.frontend_runner_kind else "backend"
+    summary_subdir = "frontend_out" if kind == "frontend" else "out"
+    test_patch_filename = "frontend_test_patch.diff" if kind == "frontend" else "test_patch.diff"
+
+    summary_path = work_dir / summary_subdir / "summary.json"
     if not summary_path.exists():
+        kind_arg = " --kind frontend" if kind == "frontend" else ""
         raise typer.BadParameter(
             f"No extract summary at {summary_path}. "
-            f"Run `pbench extract --pr {pr} --source {source}` first."
+            f"Run `pbench batch-extract --source {source}{kind_arg} --top N` first "
+            f"(must include this PR)."
         )
     summary = json.loads(summary_path.read_text())
 
@@ -668,9 +676,9 @@ def agent_score_cmd(
     if repo_dir is None:
         raise typer.BadParameter(
             f"no extract repo found. Tried: {[str(p) for p in candidate_repos]}. "
-            f"Run `pbench extract --pr {pr} --source {source}` first."
+            f"Run extract first."
         )
-    console.log(f"resetting {repo_dir} to base {summary['base_commit'][:10]}")
+    console.log(f"resetting {repo_dir} to base {summary['base_commit'][:10]} (kind={kind})")
     g.clean(repo_dir)
     g.reset_hard(repo_dir, summary["base_commit"])
     shared_repo = repo_dir
@@ -726,7 +734,7 @@ def agent_score_cmd(
     console.log(f"agent diff → {diff_path}")
 
     # Now reuse the existing scorer (it re-resets, re-applies test_patch, etc.)
-    test_patch_path = work_dir / "test_patch.diff"
+    test_patch_path = work_dir / test_patch_filename
     test_patch = test_patch_path.read_text() if test_patch_path.exists() else ""
     score_spec = sc.ScoreSpec(
         instance_id=instance_id,
@@ -737,9 +745,14 @@ def agent_score_cmd(
         fail_to_pass=list(summary.get("fail_to_pass") or []),
         pass_to_pass=list(summary.get("pass_to_pass") or []),
     )
-    score_result = sc.score_patch(
-        score_spec, source=src, work_root=work_dir, mode=mode, console=console,
-    )
+    if kind == "frontend":
+        score_result = sc.score_patch_frontend(
+            score_spec, source=src, work_root=work_dir, console=console,
+        )
+    else:
+        score_result = sc.score_patch(
+            score_spec, source=src, work_root=work_dir, mode=mode, console=console,
+        )
     console.print("")
     console.print(f"[bold]score = {score_result.score}[/bold]")
     console.print(
