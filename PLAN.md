@@ -289,6 +289,31 @@ PrototypeBench v1 은 정체성 ("AI-native Python+JS stack") 유지. Spring sis
 
 우선순위가 역전되면 설계 편향 발생. 내부 가치 먼저.
 
+### 5.5 응시자-하네스 경계 (2026-05-24 채택)
+
+PrototypeBench 는 **task spec + score** 만 정의한다. **응시자가 자신의 agent 를 자유롭게 설계** 한다. SWE-Bench 의 spec 과 동일 철학.
+
+| 영역 | 누가 정의 | 내용 |
+|---|---|---|
+| **Harness 영역** | PrototypeBench | task instance (problem_statement, base_commit, test_patch, F2P/P2P), score 채점 코어 (pytest/Playwright 실행 + 결과 비교), 환경 재현성 (Docker images, lock SHAs) |
+| **응시자 영역** | 평가받는 모델/에이전트 팀 | system prompt, tool allowlist, multi-turn 전략, retry 정책, planning algorithm, RAG/context 주입, 모델 선택, 결국 **patch 생성 방식 전부** |
+| **응시자 제출물** | 응시자 → 하네스 | 최종 non-test unified diff (또는 working tree 변경 → 하네스가 `git diff` 추출) |
+
+**근거**:
+- 우리가 prompt/tool 강제하면 → 그 prompt 에 우연히 잘 맞는 모델이 유리해짐 (예: Claude 에 맞춰 짠 prompt → Gemini/GPT 불공정)
+- 진짜 측정 대상은 "모델 + 응시자의 agent 설계 능력" 전체. agent 설계도 capability 의 일부.
+- SWE-Bench / Terminal-Bench 도 동일 — task spec + score 만, agent 는 자유.
+
+**Reference 구현** (`harness/agent_loop_runner.py`):
+- Claude CLI backend 의 reference 구현 1 개 제공.
+- 응시자가 "이 정도 minimum 으로도 작동" 의 baseline 으로 사용 가능.
+- 그러나 **응시자의 자기 runner 사용이 일반 case**. PrototypeBench score 만 우리 책임.
+
+**리더보드 제출 양식** (Phase 4):
+- 모델 ID + cutoff 일자 (오염 점수 보정용, §5.2)
+- 사용한 agent 설계 요약 (자유 형식, 재현성 위함)
+- 각 instance 의 결과 patch (또는 score 직접 제출 + 재현 가능 명령)
+
 ---
 
 ## 6. 기각된 네이밍 (재조사 방지)
@@ -421,6 +446,8 @@ PrototypeBench v1 은 정체성 ("AI-native Python+JS stack") 유지. Spring sis
 
 **결정**: Phase 3 부터 **agent-loop interface 우선** 채택. v1 spec 의 patch-submission 은 backward-compat 으로만 유지.
 
+**보충 (§5.5 cross-ref)**: harness 영역은 task spec + score 만. agent 의 system prompt / tool / loop / planning 은 응시자 자유 설계. `harness/agent_loop_runner.py` 는 **reference 구현 (Claude CLI baseline)** 일 뿐이며, 응시자는 자기 runner 로 대체 자유.
+
 **근거** — 2026-05-23 smoke test (`IBM/mcp-context-forge#3284`, F2P=1):
 - (A) 하네스 sanity (정답 patch → score): ✅ score=1, F2P 1/1, P2P 6/6 (3 분)
 - (B) Claude CLI `--print` nested (problem + 코드 excerpt → diff): ⚠ 의미적 정답 100% 일치, but **`git apply` "corrupt patch at line 12"** — context line whitespace / hunk header line-count 의 byte-exact mismatch 로 score=0
@@ -437,10 +464,13 @@ PrototypeBench v1 은 정체성 ("AI-native Python+JS stack") 유지. Spring sis
 
 #### 3.1 모델 평가 작업
 
-- [ ] Agent-loop runner 작성 (`harness/agent_loop_runner.py`) — `claude --add-dir` / Anthropic SDK with tool-use / Gemini equivalent 의 3 backend
+- [x] **Reference agent-loop runner** (`harness/agent_loop_runner.py`) — Claude CLI baseline. 응시자 자유 설계 영역 외 (§5.5)
+- [x] `pbench agent-score` CLI — extract → agent loop → diff 추출 → score (backend + frontend dual)
+- [x] **First multi-instance smoke** (2026-05-23): backend 5/10 = 50% (mcp-context-forge), frontend 진행 중 (bruno, 1/10 first done)
+- [ ] **Submission spec** 문서화 — 응시자가 자기 runner 로 score 만 사용하는 path 공식화 (§5.5)
 - [ ] Banya 에이전트 v N / v N-1 비교 평가
 - [ ] 3~5개 프런티어 모델 평가 (Claude Opus 4.7, Sonnet 4.6, GPT-5, Gemini 3 등)
-- [ ] 비용 추정 필요 (123 태스크 × 5 모델 × 에이전트 루프 ≈ 수천 달러/회차)
+- [ ] 비용 추정 (123 태스크 × 5 모델 × 에이전트 루프 ≈ 수천 달러/회차)
 - [ ] 태스크별 실패 분석 → 태스크 품질 개선 (너무 쉬움/모호함/테스트 부실 제거)
 
 ### Phase 4 — 공개 베타 ⏳

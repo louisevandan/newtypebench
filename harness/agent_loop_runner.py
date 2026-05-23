@@ -1,22 +1,38 @@
-"""Agent-loop runner — mounts a repo, lets the model edit files via tools,
-then extracts the resulting diff with `git diff` (byte-exact by construction).
+"""REFERENCE agent-loop runner — Claude CLI baseline only.
+
+**Position in the benchmark** (PLAN.md §5.5):
+
+This module is *not* the harness contract. PrototypeBench's contract with
+the outside world is **task spec + score**; submitters bring their own
+agent (their own system prompt, their own tool allowlist, their own
+multi-turn / planning / retry strategy). This file is what we run when we
+need a quick internal sanity check or when we want a baseline number to
+compare against in the leaderboard, and nothing more.
+
+Submitters are free — and encouraged — to wire up their own runner. The
+public contract is just:
+
+  1. Read the task instance (problem_statement, base_commit, ...).
+  2. Produce a non-test unified diff (or mutate a working tree and let the
+     harness `git diff` it).
+  3. Pass the diff to `pbench score`.
 
 Adopted in Phase 3 over patch-submission because frontier models reliably
 produce semantically-correct fixes but can't reliably serialize byte-exact
-unified diffs (2026-05-23 smoke: `IBM/mcp-context-forge#3284` was solved
-correctly in content but `git apply` rejected the diff — see PLAN.md §8.3.0).
+unified diffs (2026-05-23 smoke on `IBM/mcp-context-forge#3284` — see
+PLAN.md §8.3.0). Agent-loop fixes that by construction: `git diff` is the
+canonical serializer of the actual edits.
 
-Currently supports a single backend:
+This reference supports a single backend:
 
   * `claude` — Anthropic's Claude Code CLI in --print mode with --add-dir
     pointing at the instance's repo. Lets the model use Read/Edit/Write/
-    Bash(git *)/Glob to edit in place. We then git-diff the working tree
-    against base_commit, excluding test files (the harness re-injects
-    test_patch at score time anyway, so the agent's test edits would be
-    overwritten — better to keep the diff non-test).
+    Bash(git diff:*)/Glob/etc. to edit in place. We then git-diff the
+    working tree against base_commit, excluding test files (the harness
+    re-injects test_patch at score time anyway).
 
 Other backends (Anthropic SDK direct tool-use, Gemini equivalent) plug
-into the same `AgentLoopSpec` interface.
+into the same `AgentLoopSpec` interface and are stubbed for follow-up.
 """
 
 from __future__ import annotations
