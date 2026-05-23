@@ -605,5 +605,156 @@ def score_cmd(
     raise typer.Exit(code=0 if result.score == 1 else 1)
 
 
+@app.command(name="agent-score")
+def agent_score_cmd(
+    pr: int = typer.Option(..., "--pr", help="Merged PR number (must have been extracted first)."),
+    source: str = typer.Option("fastapi-template", "--source", help="Source short name."),
+    backend: str = typer.Option(
+        "claude", "--backend", help="Agent backend (currently: 'claude').",
+    ),
+    model: str = typer.Option(
+        "claude-opus-4-7", "--model", help="Model identifier passed to the backend.",
+    ),
+    work_root: Path = typer.Option(
+        Path("/tmp/pbench"), "--work-root", help="Must match the extract run's --work-root.",
+    ),
+    timeout: float = typer.Option(
+        1800.0, "--timeout", help="Per-instance agent timeout (seconds).",
+    ),
+    keep_diff: Path = typer.Option(
+        None, "--keep-diff",
+        help="If set, write the extracted agent diff to this file before scoring.",
+    ),
+    mode: str = typer.Option(
+        "docker", "--mode", help="Score execution mode: 'docker' or 'local'.",
+    ),
+) -> None:
+    """Phase 3 — agent-loop scoring (mount repo → model edits → git diff → score).
+
+    Replaces patch-submission for frontier-model evaluation. The agent gets
+    a working repo + the natural-language problem_statement; the harness
+    extracts the resulting non-test diff with `git diff` and feeds it to the
+    existing scorer.
+
+    Prereq: `pbench extract --pr <N> --source <s>` has already run.
+    """
+    from harness import agent_loop_runner as al
+    from harness import score as sc
+    from harness.sources import get as get_source
+
+    src = get_source(source)
+    owner, name = src.name.split("/", 1)
+    instance_id = f"{owner.replace('-','_')}__{name}-{pr}"
+    work_dir = work_root / instance_id
+
+    summary_path = work_dir / "out" / "summary.json"
+    if not summary_path.exists():
+        raise typer.BadParameter(
+            f"No extract summary at {summary_path}. "
+            f"Run `pbench extract --pr {pr} --source {source}` first."
+        )
+    summary = json.loads(summary_path.read_text())
+
+    # The agent's working repo: prefer the batch-extract shared checkout
+    # (single-source, reused across many PRs), else fall back to the
+    # per-instance repo that single `extract` creates.
+    from harness import git_ops as g
+    candidate_repos = [
+        work_root / f"_shared_repo_{src.short_name}",
+        work_dir / "repo",
+        work_root / "_shared_repo",   # legacy
+    ]
+    repo_dir = next((p for p in candidate_repos if p.exists()), None)
+    if repo_dir is None:
+        raise typer.BadParameter(
+            f"no extract repo found. Tried: {[str(p) for p in candidate_repos]}. "
+            f"Run `pbench extract --pr {pr} --source {source}` first."
+        )
+    console.log(f"resetting {repo_dir} to base {summary['base_commit'][:10]}")
+    g.clean(repo_dir)
+    g.reset_hard(repo_dir, summary["base_commit"])
+    shared_repo = repo_dir
+
+    # Find PR meta for the problem_statement (could also read from instances.jsonl).
+    prs_path = _raw_path(src.short_name, "prs.jsonl")
+    pr_meta = _find_pr(prs_path, pr)
+    # Prefer the problem_statement we curated into instances.jsonl (it strips
+    # solution-leaking sections); fall back to PR body if no instance file.
+    inst_path = Path(f"tasks/instances.{src.short_name}.jsonl")
+    if not inst_path.exists() and src.short_name == "fastapi-template":
+        inst_path = Path("tasks/instances.jsonl")
+    problem_statement = ""
+    if inst_path.exists():
+        for line in inst_path.read_text().splitlines():
+            if not line.strip(): continue
+            row = json.loads(line)
+            if row.get("pr_number") == pr:
+                problem_statement = row.get("problem_statement", "")
+                break
+    if not problem_statement:
+        problem_statement = pr_meta.get("body") or pr_meta.get("title") or ""
+
+    spec = al.AgentLoopSpec(
+        instance_id=instance_id,
+        repo_url=src.repo_url,
+        base_commit=summary["base_commit"],
+        problem_statement=problem_statement,
+        source=src,
+        model=model,
+        timeout_s=timeout,
+    )
+
+    console.log(f"agent-loop start: backend={backend} model={model} pr={pr}")
+    al_result = al.run_agent_loop(spec, backend=backend, repo_dir=shared_repo)
+    console.log(
+        f"agent-loop done: rc={al_result.returncode} dur={al_result.duration_s:.0f}s "
+        f"diff={al_result.diff_bytes}B"
+    )
+    if al_result.error:
+        console.print(f"[red]agent-loop error:[/red] {al_result.error}")
+    for n in al_result.notes:
+        console.print(f"[yellow]note:[/yellow] {n}")
+
+    if not al_result.diff:
+        console.print("[red]agent produced an empty diff — score=0[/red]")
+        raise typer.Exit(code=1)
+
+    # Optionally archive the diff for inspection / re-runs.
+    diff_path = keep_diff or (work_dir / "agent_loop_diff.patch")
+    diff_path.parent.mkdir(parents=True, exist_ok=True)
+    diff_path.write_text(al_result.diff)
+    console.log(f"agent diff → {diff_path}")
+
+    # Now reuse the existing scorer (it re-resets, re-applies test_patch, etc.)
+    test_patch_path = work_dir / "test_patch.diff"
+    test_patch = test_patch_path.read_text() if test_patch_path.exists() else ""
+    score_spec = sc.ScoreSpec(
+        instance_id=instance_id,
+        repo_url=src.repo_url,
+        base_commit=summary["base_commit"],
+        test_patch=test_patch,
+        agent_patch=al_result.diff,
+        fail_to_pass=list(summary.get("fail_to_pass") or []),
+        pass_to_pass=list(summary.get("pass_to_pass") or []),
+    )
+    score_result = sc.score_patch(
+        score_spec, source=src, work_root=work_dir, mode=mode, console=console,
+    )
+    console.print("")
+    console.print(f"[bold]score = {score_result.score}[/bold]")
+    console.print(
+        f"FAIL_TO_PASS: {len(score_result.fail_to_pass_passed)}/{len(score_spec.fail_to_pass)} passing"
+    )
+    if score_result.fail_to_pass_failed:
+        for t in score_result.fail_to_pass_failed[:8]:
+            console.print(f"    - {t}")
+    console.print(
+        f"PASS_TO_PASS: {len(score_result.pass_to_pass_passed)}/{len(score_spec.pass_to_pass)} passing"
+    )
+    if score_result.error:
+        console.print(f"[red]error:[/red] {score_result.error}")
+    raise typer.Exit(code=0 if score_result.score == 1 else 1)
+
+
 if __name__ == "__main__":
     app()
