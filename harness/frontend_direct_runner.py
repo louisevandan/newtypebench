@@ -90,31 +90,19 @@ def run_phase_direct(
     repo_abs = repo_dir if repo_dir.is_absolute() else repo_dir.resolve()
     out_abs = out_dir if out_dir.is_absolute() else out_dir.resolve()
 
-    # Named volumes shared across all instances of this source — npm's
-    # working tree state survives across `docker run --rm`, so the next PR's
-    # `npm i` finds most deps already installed and exits in ~10-30s instead
-    # of the cold ~3-5min cost. Same trick for `packages/*/dist` (workspace
-    # build artifacts) and the user-level npm cache (~/.npm).
-    nm_vol = f"pbench-{source.short_name}-node-modules"
-    # Per-instance dist volume to avoid cross-PR contamination — a wrong
-    # workspace's dist can break Playwright in ways that look like spec
-    # flakes. (If profiling later shows dist rebuilds dominate, we can swap
-    # to a global named volume with hash-keyed invalidation.)
-    npm_cache_vol = f"pbench-{source.short_name}-npm-cache"
-
     docker_cmd = [
         "docker", "run", "--rm",
         "--name", container,
         "-v", f"{repo_abs}:/work",
-        "-v", f"{nm_vol}:/work/node_modules",
-        "-v", f"{npm_cache_vol}:/root/.npm",
         "-v", f"{out_abs}:/output",
         "-w", "/work",
         # PLAYWRIGHT_JSON_OUTPUT_NAME directs the json reporter at this path
         # regardless of the source's playwright.config's own `outputFile`.
         "-e", "PLAYWRIGHT_JSON_OUTPUT_NAME=/output/playwright.json",
         # CI=1 makes bruno-style configs: forbid .only, retry 2x, don't reuse
-        # existing servers, drop interactive worker count. We want all of that.
+        # existing servers. We keep workers=1 (CI default) — workers=2 caused
+        # ~40 flaky spec retries on the smoke (Electron app race) for marginal
+        # net win once score-scoping (below) lands.
         "-e", "CI=1",
         source.frontend_docker_image,
         "bash", "-c", container_cmd,

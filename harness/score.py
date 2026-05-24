@@ -217,6 +217,17 @@ def score_patch_frontend(
     out_dir = work_root / "out_score_frontend"
     out_dir.mkdir(exist_ok=True)
 
+    # Defensive: nuke stale runner output before this run starts. Without
+    # this, a failed docker run that doesn't produce a new playwright.json
+    # would leave the *previous* run's report on disk, and parse() would
+    # silently return the previous run's outcomes — i.e. silently rescue
+    # a broken run with stale data and produce an entirely wrong score.
+    for f in ("playwright.json", "playwright.exitcode",
+              "playwright.stdout", "playwright.stderr"):
+        p = out_dir / f
+        if p.exists():
+            p.unlink()
+
     result = ScoreResult(
         instance_id=spec.instance_id, score=0,
         mode=source.frontend_runner_kind or "compose",
@@ -250,16 +261,39 @@ def score_patch_frontend(
     runner_kind = source.frontend_runner_kind or "compose"
     project = f"pbench-fe-score-{spec.instance_id}"[:50]
 
+    # Source-driven scoping: extract spec-file paths from test_patch and
+    # pass them as Playwright positional args so we run only the specs the
+    # PR actually touched (typically a handful) instead of the source's
+    # full e2e suite (bruno: ~486 specs, ~38min). This is the same scope
+    # the extract phase used to compute F2P/P2P, so the comparison stays
+    # consistent.
+    import re as _re
+    added_specs = _re.findall(r"^\+\+\+ b/(\S+)", spec.test_patch, _re.MULTILINE)
+    fe_path_re = (
+        _re.compile(source.frontend_test_path_re)
+        if source.frontend_test_path_re else None
+    )
+    strip = source.frontend_test_diff_strip_prefix or ""
+    scoped = sorted({
+        (p[len(strip):] if strip and p.startswith(strip) else p)
+        for p in added_specs
+        if fe_path_re and fe_path_re.match(p)
+    })
+    if scoped:
+        console.log(f"scoped to {len(scoped)} spec(s): {scoped[:3]}{'...' if len(scoped)>3 else ''}")
+
     try:
         if runner_kind == "playwright_direct":
             run, outcomes = frontend_direct_runner.run_phase_direct(
                 repo_dir=repo_dir, source=source,
                 instance_id=f"score-{spec.instance_id}",
                 out_dir=out_dir,
+                extra_args=scoped or None,
             )
         elif runner_kind == "compose":
             run, outcomes = frontend_runner.run_phase(
                 repo_dir=repo_dir, project=project, out_dir=out_dir,
+                extra_args=scoped or None,
             )
         else:
             result.error = f"unsupported frontend_runner_kind: {runner_kind!r}"
