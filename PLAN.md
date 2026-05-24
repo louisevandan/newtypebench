@@ -467,10 +467,12 @@ PrototypeBench 는 **task spec + score** 만 정의한다. **응시자가 자신
 - [x] **Reference agent-loop runner** (`harness/agent_loop_runner.py`) — Claude CLI baseline. 응시자 자유 설계 영역 외 (§5.5)
 - [x] `pbench agent-score` CLI — extract → agent loop → diff 추출 → score (backend + frontend dual)
 - [x] **First 20-instance smoke** (Claude Opus 4.7 / reference runner / 2026-05-23~24):
-  - Backend (mcp-context-forge): **5/10 = 50%**, avg 6m/instance, 1 timeout (#3649)
-  - Frontend (bruno):           **0/10 = 0%**, avg 38m/instance — 단 partial F2P 통과 3건 (#7948 4/4 F2P + P2P 1 regression, #7942 2/3, #7912 2/3)
-  - **Grand total: 5/20 = 25%** (binary). Partial-credit 가중 시 ~48%
-  - 신호: FE 가 BE 보다 측정상 압도적으로 어려움 — Snapshot Playwright test 의 brittleness + agent 의 file-structure 정확도 + e2e 통합 검증의 다단계성이 누적
+  - Initial v0.2 result: BE 5/10 + FE 0/10 = **5/20 = 25%** (binary)
+  - After harness fixes (v0.2.1 fixtures + v0.2.2 snapshot advisory): BE 5/10 + FE **1**/10 = **6/20 = 30%**
+  - Average duration: BE ~6m/instance, FE ~38m/instance (10× 무거움)
+  - Backend timeout: 1 (#3649, 600s 부족)
+  - Harness fixes 영향: #7947 (F2P 0/12 → **11/12** byte-identical agent), #7948 (P2P 14/14 → **4/4 F2P + 0/0 P2P = score 1**), #7912 (P2P 0/0)
+  - 신호: FE 는 BE 보다 측정상 무겁고 agent 의 file-structure 정확도가 결정적. 단 *harness* 책임 가능 부분은 v0.2.2 까지로 거의 회수됨. 나머지 9 FE fail 중 7건은 §5.5 의 응시자 영역 (file 누락 / wrong direction), 2건 (#7942/#7912) 은 partial credit 대상.
 - [ ] **Submission spec** 문서화 — 응시자가 자기 runner 로 score 만 사용하는 path 공식화 (§5.5)
 - [ ] **Partial credit 도입 검토** — FE 0/10 binary 결과 중 #7948 (~93%), #7942/7912 (~67%) 같은 near-pass 가 0점. §9 의 partial credit 결정사항이 FE 공정성 측면에서 urgent
 - [ ] Banya 에이전트 v N / v N-1 비교 평가
