@@ -2,7 +2,7 @@
   <b>English</b> · <a href="README.ko.md">한국어</a>
 </p>
 
-# PrototypeBench
+# NewtypeBench
 
 > **Can your agent ship a full-stack AI-native prototype?**
 
@@ -12,9 +12,9 @@
 ![license](https://img.shields.io/badge/license-MIT-blue)
 ![stack](https://img.shields.io/badge/stack-React%20%2B%20Vite%20%2B%20Tailwind%20%7C%20FastAPI%20%2B%20SQLModel-black)
 
-PrototypeBench is an open benchmark for evaluating the **full-stack product-shipping ability** of AI coding agents. Where SWE-Bench measures bug-fixing in mature Python libraries, PrototypeBench measures **"can the agent ship a full-stack feature on a modern AI-native stack?"**
+NewtypeBench is an open benchmark for evaluating the **full-stack product-shipping ability** of AI coding agents. Where SWE-Bench measures bug-fixing in mature Python libraries, NewtypeBench measures **"can the agent ship a full-stack feature on a modern AI-native stack?"**
 
-- **📦 Dataset on Hugging Face**: [`banyaaiofficial/prototypebench-v1`](https://huggingface.co/datasets/banyaaiofficial/prototypebench-v1) — **123 instances** (v0.2.2, 71 backend + 52 frontend), MIT, `datasets.load_dataset(...)` ready.
+- **📦 Dataset on Hugging Face**: [`banyaaiofficial/newtypebench-v1`](https://huggingface.co/datasets/banyaaiofficial/newtypebench-v1) — **123 instances** (v0.2.2, 71 backend + 52 frontend), MIT, `datasets.load_dataset(...)` ready.
 - **Task sources** (multi-source via `harness/sources/`):
   - [`fastapi/full-stack-fastapi-template`](https://github.com/fastapi/full-stack-fastapi-template) — MIT, 42.7k★ — full-stack template (React+Vite+Tailwind+shadcn / FastAPI+SQLModel+Postgres). 3 backend instances.
   - [`IBM/mcp-context-forge`](https://github.com/IBM/mcp-context-forge) — Apache-2, 3.6k★ — FastAPI MCP gateway, 1,645 PRs/yr, hermetic SQLite tests. 68 backend instances.
@@ -112,8 +112,8 @@ Two invariants carry the benchmark's credibility:
 ### Install
 
 ```bash
-git clone https://github.com/prototypebench/prototypebench.git
-cd prototypebench
+git clone https://github.com/NewType-2038/newtypebench.git
+cd newtypebench
 uv sync
 ```
 
@@ -178,7 +178,7 @@ for a minimal SQLite-only example.
 ## Repo layout
 
 ```
-prototypebench/
+newtypebench/
 ├── PLAN.md                      # Project charter (principles · competitive map · roadmap)
 ├── schemas/
 │   └── task_instance.schema.json
