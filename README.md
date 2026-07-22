@@ -112,7 +112,7 @@ Two invariants carry the benchmark's credibility:
 ### Install
 
 ```bash
-git clone https://github.com/NewType-2038/newtypebench.git
+git clone https://github.com/louisevandan/newtypebench.git
 cd newtypebench
 uv sync
 ```
